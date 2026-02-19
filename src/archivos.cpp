@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include "archivos.h"
 #include "estructuras.h"
 
@@ -38,7 +39,7 @@ int existeIDEnArchivo(const char archivo[], const char id[]) {
 void crearArchivosIniciales() {
     FILE *f;
     /* Crear directorio datos si no existe */
-    system("mkdir -p datos");
+    mkdir("datos", 0755);
 
     /* Crear archivo de usuarios si no existe */
     f = fopen(ARCHIVO_USUARIOS, "r");

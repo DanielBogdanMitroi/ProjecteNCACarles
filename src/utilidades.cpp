@@ -26,14 +26,18 @@ void leerString(char destino[], int tamano, const char mensaje[]) {
 /* Lee un entero con mensaje */
 void leerEntero(int *destino, const char mensaje[]) {
     printf("%s", mensaje);
-    scanf("%d", destino);
+    if (scanf("%d", destino) != 1) {
+        *destino = 0;
+    }
     getchar();
 }
 
 /* Lee un float con mensaje */
 void leerFloat(float *destino, const char mensaje[]) {
     printf("%s", mensaje);
-    scanf("%f", destino);
+    if (scanf("%f", destino) != 1) {
+        *destino = 0.0f;
+    }
     getchar();
 }
 
