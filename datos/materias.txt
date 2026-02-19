@@ -1,0 +1,3 @@
+MAT001|Matematicas|Algebra y calculo basico|5|4|1
+MAT002|Informatica|Fundamentos de programacion|4|3|1
+MAT003|Lengua|Lengua castellana y literatura|3|3|1
