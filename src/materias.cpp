@@ -100,15 +100,35 @@ void agregarMateria() {
 
     printf("=== AGREGAR MATERIA ===\n");
     printf("ID generado: %s\n", nueva.id);
-    leerString(nueva.nombre, sizeof(nueva.nombre), "Nombre: ");
-    leerString(nueva.descripcion, sizeof(nueva.descripcion), "Descripcion: ");
-    leerEntero(&nueva.creditos, "Creditos: ");
-    if (!validarCreditos(nueva.creditos)) {
-        printf("Numero de creditos invalido (1-20).\n");
-        pausar();
-        return;
-    }
-    leerEntero(&nueva.horas_semanales, "Horas semanales: ");
+
+    do {
+        leerString(nueva.nombre, sizeof(nueva.nombre), "Nombre: ");
+        if (!validarCadenaNoVacia(nueva.nombre, 2)) {
+            printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nueva.nombre, 2));
+
+    do {
+        leerString(nueva.descripcion, sizeof(nueva.descripcion), "Descripcion: ");
+        if (!validarCadenaNoVacia(nueva.descripcion, 3)) {
+            printf("Error: La descripcion debe tener al menos 3 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nueva.descripcion, 3));
+
+    do {
+        leerEntero(&nueva.creditos, "Creditos: ");
+        if (!validarCreditos(nueva.creditos)) {
+            printf("Error: Numero de creditos invalido (1-20).\n");
+        }
+    } while (!validarCreditos(nueva.creditos));
+
+    do {
+        leerEntero(&nueva.horas_semanales, "Horas semanales: ");
+        if (nueva.horas_semanales < 1 || nueva.horas_semanales > 40) {
+            printf("Error: Horas semanales invalidas (1-40).\n");
+        }
+    } while (nueva.horas_semanales < 1 || nueva.horas_semanales > 40);
+
     nueva.activo = 1;
 
     materias[total] = nueva;
@@ -130,10 +150,35 @@ void editarMateria() {
     for (i = 0; i < total; i++) {
         if (strcmp(materias[i].id, id_buscar) == 0) {
             printf("=== EDITAR MATERIA %s ===\n", materias[i].id);
-            leerString(materias[i].nombre, sizeof(materias[i].nombre), "Nombre: ");
-            leerString(materias[i].descripcion, sizeof(materias[i].descripcion), "Descripcion: ");
-            leerEntero(&materias[i].creditos, "Creditos: ");
-            leerEntero(&materias[i].horas_semanales, "Horas semanales: ");
+
+            do {
+                leerString(materias[i].nombre, sizeof(materias[i].nombre), "Nombre: ");
+                if (!validarCadenaNoVacia(materias[i].nombre, 2)) {
+                    printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+                }
+            } while (!validarCadenaNoVacia(materias[i].nombre, 2));
+
+            do {
+                leerString(materias[i].descripcion, sizeof(materias[i].descripcion), "Descripcion: ");
+                if (!validarCadenaNoVacia(materias[i].descripcion, 3)) {
+                    printf("Error: La descripcion debe tener al menos 3 caracteres.\n");
+                }
+            } while (!validarCadenaNoVacia(materias[i].descripcion, 3));
+
+            do {
+                leerEntero(&materias[i].creditos, "Creditos: ");
+                if (!validarCreditos(materias[i].creditos)) {
+                    printf("Error: Numero de creditos invalido (1-20).\n");
+                }
+            } while (!validarCreditos(materias[i].creditos));
+
+            do {
+                leerEntero(&materias[i].horas_semanales, "Horas semanales: ");
+                if (materias[i].horas_semanales < 1 || materias[i].horas_semanales > 40) {
+                    printf("Error: Horas semanales invalidas (1-40).\n");
+                }
+            } while (materias[i].horas_semanales < 1 || materias[i].horas_semanales > 40);
+
             guardarMaterias(materias, total);
             printf("Materia actualizada.\n");
             pausar();

@@ -25,20 +25,26 @@ void leerString(char destino[], int tamano, const char mensaje[]) {
 
 /* Lee un entero con mensaje */
 void leerEntero(int *destino, const char mensaje[]) {
+    int c;
     printf("%s", mensaje);
-    if (scanf("%d", destino) != 1) {
-        *destino = 0;
+    while (scanf("%d", destino) != 1) {
+        printf("Error: Debe ingresar un numero entero.\n");
+        while ((c = getchar()) != '\n' && c != EOF);
+        printf("%s", mensaje);
     }
-    getchar();
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 
 /* Lee un float con mensaje */
 void leerFloat(float *destino, const char mensaje[]) {
+    int c;
     printf("%s", mensaje);
-    if (scanf("%f", destino) != 1) {
-        *destino = 0.0f;
+    while (scanf("%f", destino) != 1) {
+        printf("Error: Debe ingresar un numero decimal.\n");
+        while ((c = getchar()) != '\n' && c != EOF);
+        printf("%s", mensaje);
     }
-    getchar();
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 
 /* Limpia la pantalla */

@@ -70,6 +70,7 @@ void agregarNota(Usuario usuario_actual) {
     Nota notas[MAX_NOTAS];
     int total;
     Nota nueva;
+    int fecha_valida;
     memset(&nueva, 0, sizeof(Nota));
 
     if (usuario_actual.tipo == 3) {
@@ -83,17 +84,47 @@ void agregarNota(Usuario usuario_actual) {
 
     printf("=== AGREGAR NOTA ===\n");
     printf("ID generado: %s\n", nueva.id);
-    leerString(nueva.id_alumno, sizeof(nueva.id_alumno), "ID Alumno: ");
-    leerString(nueva.id_materia, sizeof(nueva.id_materia), "ID Materia: ");
-    leerFloat(&nueva.calificacion, "Calificacion (0-10): ");
-    if (!validarNota(nueva.calificacion)) {
-        printf("Calificacion invalida (0-10).\n");
-        pausar();
-        return;
-    }
-    leerString(nueva.tipo, sizeof(nueva.tipo), "Tipo (Examen/Trabajo/Practica): ");
+
+    do {
+        leerString(nueva.id_alumno, sizeof(nueva.id_alumno), "ID Alumno: ");
+        if (!validarCadenaNoVacia(nueva.id_alumno, 2)) {
+            printf("Error: El ID de alumno no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(nueva.id_alumno, 2));
+
+    do {
+        leerString(nueva.id_materia, sizeof(nueva.id_materia), "ID Materia: ");
+        if (!validarCadenaNoVacia(nueva.id_materia, 2)) {
+            printf("Error: El ID de materia no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(nueva.id_materia, 2));
+
+    do {
+        leerFloat(&nueva.calificacion, "Calificacion (0-10): ");
+        if (!validarNota(nueva.calificacion)) {
+            printf("Error: Calificacion invalida (0-10).\n");
+        }
+    } while (!validarNota(nueva.calificacion));
+
+    do {
+        leerString(nueva.tipo, sizeof(nueva.tipo), "Tipo (Examen/Trabajo/Practica): ");
+        if (!validarCadenaNoVacia(nueva.tipo, 3)) {
+            printf("Error: El tipo debe tener al menos 3 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nueva.tipo, 3));
+
     leerString(nueva.descripcion, sizeof(nueva.descripcion), "Descripcion: ");
-    leerString(nueva.fecha, sizeof(nueva.fecha), "Fecha (YYYY-MM-DD): ");
+
+    fecha_valida = 0;
+    do {
+        leerString(nueva.fecha, sizeof(nueva.fecha), "Fecha (YYYY-MM-DD): ");
+        if (!validarFecha(nueva.fecha)) {
+            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
+        } else {
+            fecha_valida = 1;
+        }
+    } while (!fecha_valida);
+
     leerString(nueva.periodo, sizeof(nueva.periodo), "Periodo: ");
 
     notas[total] = nueva;
@@ -121,13 +152,21 @@ void editarNota(Usuario usuario_actual) {
     for (i = 0; i < total; i++) {
         if (strcmp(notas[i].id, id_buscar) == 0) {
             printf("=== EDITAR NOTA %s ===\n", notas[i].id);
-            leerFloat(&notas[i].calificacion, "Nueva calificacion (0-10): ");
-            if (!validarNota(notas[i].calificacion)) {
-                printf("Calificacion invalida.\n");
-                pausar();
-                return;
-            }
-            leerString(notas[i].tipo, sizeof(notas[i].tipo), "Tipo: ");
+
+            do {
+                leerFloat(&notas[i].calificacion, "Nueva calificacion (0-10): ");
+                if (!validarNota(notas[i].calificacion)) {
+                    printf("Error: Calificacion invalida (0-10).\n");
+                }
+            } while (!validarNota(notas[i].calificacion));
+
+            do {
+                leerString(notas[i].tipo, sizeof(notas[i].tipo), "Tipo: ");
+                if (!validarCadenaNoVacia(notas[i].tipo, 3)) {
+                    printf("Error: El tipo debe tener al menos 3 caracteres.\n");
+                }
+            } while (!validarCadenaNoVacia(notas[i].tipo, 3));
+
             leerString(notas[i].descripcion, sizeof(notas[i].descripcion), "Descripcion: ");
             guardarNotas(notas, total);
             printf("Nota actualizada.\n");
