@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#ifdef _WIN32
+#include <direct.h>
+#endif
 #include "archivos.h"
 #include "estructuras.h"
 
@@ -39,7 +42,11 @@ int existeIDEnArchivo(const char archivo[], const char id[]) {
 void crearArchivosIniciales() {
     FILE *f;
     /* Crear directorio datos si no existe */
+#ifdef _WIN32
+    _mkdir("datos");
+#else
     mkdir("datos", 0755);
+#endif
 
     /* Crear archivo de usuarios si no existe */
     f = fopen(ARCHIVO_USUARIOS, "r");

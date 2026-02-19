@@ -15,6 +15,15 @@ Sistema de gestion escolar completo en C++ con I/O estilo C.
 
 ## Compilar y ejecutar
 
+### Windows (MinGW/MSYS2)
+
+```
+mingw32-make
+.\bin\escuela.exe
+```
+
+### Linux/macOS
+
 ```
 make
 ./bin/escuela
