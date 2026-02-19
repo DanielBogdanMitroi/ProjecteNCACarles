@@ -1,0 +1,2 @@
+PROF001|Antonio|Garcia Lopez|antonio.garcia@escuela.com|Matematicas|645678901|1
+PROF002|Elena|Martinez Torres|elena.martinez@escuela.com|Informatica|656789012|1

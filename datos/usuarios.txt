@@ -1,0 +1,6 @@
+admin|admin123|1|ADMIN
+prof.garcia|profesor123|2|PROF001
+prof.martinez|profesor456|2|PROF002
+juan.perez|alumno123|3|ALU001
+maria.lopez|alumno456|3|ALU002
+carlos.ruiz|alumno789|3|ALU003

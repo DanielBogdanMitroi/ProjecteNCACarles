@@ -1,0 +1,3 @@
+ALU001|Juan|Perez Garcia|juan.perez@escuela.com|2005-03-15|612345678|Calle Mayor 1|1
+ALU002|Maria|Lopez Martinez|maria.lopez@escuela.com|2004-07-22|623456789|Av. Principal 45|1
+ALU003|Carlos|Ruiz Sanchez|carlos.ruiz@escuela.com|2005-11-10|634567890|Plaza Central 7|1

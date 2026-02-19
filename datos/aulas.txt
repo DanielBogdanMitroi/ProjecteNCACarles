@@ -1,0 +1,3 @@
+AULA001|Aula A|30|Teoria|1
+AULA002|Aula B|25|Teoria|1
+AULA003|Lab Inf|20|Laboratorio|1
