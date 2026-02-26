@@ -1,4 +1,4 @@
-CC = g++
+	CC = g++
 CFLAGS = -Wall -Wextra -I include
 LDFLAGS =
 
