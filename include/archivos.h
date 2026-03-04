@@ -2,6 +2,7 @@
 #define ARCHIVOS_H
 #include "estructuras.h"
 void crearArchivosIniciales();
+void diagnosticarCargaArchivo(const char archivo[]);
 int contarLineas(const char archivo[]);
 int existeIDEnArchivo(const char archivo[], const char id[]);
 

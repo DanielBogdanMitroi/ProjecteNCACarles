@@ -150,4 +150,13 @@ struct Periodo {
     int activo;
 };
 
+// Descomentar para activar mensajes de depuracion
+// #define DEBUG_MODE
+
+#ifdef DEBUG_MODE
+#define DEBUG_PRINT(fmt, ...) printf("[DEBUG] " fmt, ##__VA_ARGS__)
+#else
+#define DEBUG_PRINT(fmt, ...) do {} while(0)
+#endif
+
 #endif

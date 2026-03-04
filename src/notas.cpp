@@ -52,6 +52,7 @@ void listarNotas() {
     cargarNotas(notas, &total);
     limpiarPantalla();
     printf("=== LISTA DE NOTAS ===\n");
+    printf("Total de registros en archivo: %d\n", total);
     printf("%-10s %-10s %-10s %-8s %-15s %-11s\n",
            "ID", "Alumno", "Materia", "Nota", "Tipo", "Fecha");
     printf("%-10s %-10s %-10s %-8s %-15s %-11s\n",
@@ -61,7 +62,12 @@ void listarNotas() {
                notas[i].id, notas[i].id_alumno, notas[i].id_materia,
                notas[i].calificacion, notas[i].tipo, notas[i].fecha);
     }
-    printf("\nTotal: %d notas.\n", total);
+    if (total == 0) {
+        printf("\nNo hay notas registradas en el sistema.\n");
+        printf("Usa la opcion 'Agregar nota' para crear el primer registro.\n");
+    } else {
+        printf("\nTotal: %d notas.\n", total);
+    }
     pausar();
 }
 

@@ -45,10 +45,11 @@ void menuProfesores(Usuario usuario_actual) {
 /* Lista todos los profesores activos */
 void listarProfesores() {
     Profesor profesores[MAX_PROFESORES];
-    int total, i;
+    int total, i, activos = 0;
     cargarProfesores(profesores, &total);
     limpiarPantalla();
     printf("=== LISTA DE PROFESORES ===\n");
+    printf("Total de registros en archivo: %d\n", total);
     printf("%-10s %-20s %-20s %-25s\n", "ID", "Nombre", "Apellido", "Especialidad");
     printf("%-10s %-20s %-20s %-25s\n", "------", "------", "-------", "------------");
     for (i = 0; i < total; i++) {
@@ -56,9 +57,23 @@ void listarProfesores() {
             printf("%-10s %-20s %-20s %-25s\n",
                    profesores[i].id, profesores[i].nombre,
                    profesores[i].apellido, profesores[i].especialidad);
+            activos++;
         }
     }
-    printf("\nTotal activos mostrados.\n");
+    if (activos == 0) {
+        if (total == 0) {
+            printf("\nNo hay profesores registrados en el sistema.\n");
+            printf("Usa la opcion 'Agregar profesor' para crear el primer registro.\n");
+        } else {
+            printf("\nTodos los profesores estan marcados como inactivos.\n");
+            printf("Total de registros inactivos: %d\n", total);
+        }
+    } else {
+        printf("\nTotal de profesores activos: %d\n", activos);
+        if (total > activos) {
+            printf("Profesores inactivos: %d\n", total - activos);
+        }
+    }
     pausar();
 }
 

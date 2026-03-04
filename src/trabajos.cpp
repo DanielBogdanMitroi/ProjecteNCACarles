@@ -43,10 +43,11 @@ void menuTrabajos(Usuario usuario_actual) {
 /* Lista todos los trabajos activos */
 void listarTrabajos() {
     Trabajo trabajos[MAX_TRABAJOS];
-    int total, i;
+    int total, i, activos = 0;
     cargarTrabajos(trabajos, &total);
     limpiarPantalla();
     printf("=== LISTA DE TRABAJOS ===\n");
+    printf("Total de registros en archivo: %d\n", total);
     printf("%-10s %-10s %-30s %-11s %-11s\n",
            "ID", "Materia", "Titulo", "F.Asign.", "F.Entrega");
     printf("%-10s %-10s %-30s %-11s %-11s\n",
@@ -56,9 +57,23 @@ void listarTrabajos() {
             printf("%-10s %-10s %-30s %-11s %-11s\n",
                    trabajos[i].id, trabajos[i].id_materia, trabajos[i].titulo,
                    trabajos[i].fecha_asignacion, trabajos[i].fecha_entrega);
+            activos++;
         }
     }
-    printf("\nTotal activos mostrados.\n");
+    if (activos == 0) {
+        if (total == 0) {
+            printf("\nNo hay trabajos registrados en el sistema.\n");
+            printf("Usa la opcion 'Agregar trabajo' para crear el primer registro.\n");
+        } else {
+            printf("\nTodos los trabajos estan marcados como inactivos.\n");
+            printf("Total de registros inactivos: %d\n", total);
+        }
+    } else {
+        printf("\nTotal de trabajos activos: %d\n", activos);
+        if (total > activos) {
+            printf("Trabajos inactivos: %d\n", total - activos);
+        }
+    }
     pausar();
 }
 

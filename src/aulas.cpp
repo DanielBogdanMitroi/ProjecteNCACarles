@@ -34,19 +34,34 @@ void menuAulas(Usuario usuario_actual) {
 /* Lista todas las aulas activas */
 void listarAulas() {
     Aula aulas[MAX_AULAS];
-    int total, i;
+    int total, i, activos = 0;
     cargarAulas(aulas, &total);
     limpiarPantalla();
     printf("=== LISTA DE AULAS ===\n");
+    printf("Total de registros en archivo: %d\n", total);
     printf("%-10s %-20s %-10s %-15s\n", "ID", "Nombre", "Capacidad", "Tipo");
     printf("%-10s %-20s %-10s %-15s\n", "------", "------", "---------", "----");
     for (i = 0; i < total; i++) {
         if (aulas[i].activo) {
             printf("%-10s %-20s %-10d %-15s\n",
                    aulas[i].id, aulas[i].nombre, aulas[i].capacidad, aulas[i].tipo);
+            activos++;
         }
     }
-    printf("\nTotal activas mostradas.\n");
+    if (activos == 0) {
+        if (total == 0) {
+            printf("\nNo hay aulas registradas en el sistema.\n");
+            printf("Usa la opcion 'Agregar aula' para crear el primer registro.\n");
+        } else {
+            printf("\nTodas las aulas estan marcadas como inactivas.\n");
+            printf("Total de registros inactivos: %d\n", total);
+        }
+    } else {
+        printf("\nTotal de aulas activas: %d\n", activos);
+        if (total > activos) {
+            printf("Aulas inactivas: %d\n", total - activos);
+        }
+    }
     pausar();
 }
 

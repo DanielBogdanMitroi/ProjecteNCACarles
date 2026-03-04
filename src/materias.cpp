@@ -45,10 +45,11 @@ void menuMaterias(Usuario usuario_actual) {
 /* Lista todas las materias activas */
 void listarMaterias() {
     Materia materias[MAX_MATERIAS];
-    int total, i;
+    int total, i, activos = 0;
     cargarMaterias(materias, &total);
     limpiarPantalla();
     printf("=== LISTA DE MATERIAS ===\n");
+    printf("Total de registros en archivo: %d\n", total);
     printf("%-10s %-30s %-10s %-15s\n", "ID", "Nombre", "Creditos", "Horas/Semana");
     printf("%-10s %-30s %-10s %-15s\n", "------", "------", "--------", "------------");
     for (i = 0; i < total; i++) {
@@ -56,9 +57,23 @@ void listarMaterias() {
             printf("%-10s %-30s %-10d %-15d\n",
                    materias[i].id, materias[i].nombre,
                    materias[i].creditos, materias[i].horas_semanales);
+            activos++;
         }
     }
-    printf("\nTotal activas mostradas.\n");
+    if (activos == 0) {
+        if (total == 0) {
+            printf("\nNo hay materias registradas en el sistema.\n");
+            printf("Usa la opcion 'Agregar materia' para crear el primer registro.\n");
+        } else {
+            printf("\nTodas las materias estan marcadas como inactivas.\n");
+            printf("Total de registros inactivos: %d\n", total);
+        }
+    } else {
+        printf("\nTotal de materias activas: %d\n", activos);
+        if (total > activos) {
+            printf("Materias inactivas: %d\n", total - activos);
+        }
+    }
     pausar();
 }
 
