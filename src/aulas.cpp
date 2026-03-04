@@ -4,6 +4,7 @@
 #include "aulas.h"
 #include "archivos.h"
 #include "utilidades.h"
+#include "validaciones.h"
 
 /* Menu principal de gestion de aulas */
 void menuAulas(Usuario usuario_actual) {
@@ -67,9 +68,28 @@ void agregarAula(Usuario usuario_actual) {
 
     printf("=== AGREGAR AULA ===\n");
     printf("ID generado: %s\n", nueva.id);
-    leerString(nueva.nombre, sizeof(nueva.nombre), "Nombre: ");
-    leerEntero(&nueva.capacidad, "Capacidad: ");
-    leerString(nueva.tipo, sizeof(nueva.tipo), "Tipo (Teoria/Laboratorio): ");
+
+    do {
+        leerString(nueva.nombre, sizeof(nueva.nombre), "Nombre: ");
+        if (!validarCadenaNoVacia(nueva.nombre, 2)) {
+            printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nueva.nombre, 2));
+
+    do {
+        leerEntero(&nueva.capacidad, "Capacidad: ");
+        if (nueva.capacidad < 1) {
+            printf("Error: La capacidad debe ser al menos 1.\n");
+        }
+    } while (nueva.capacidad < 1);
+
+    do {
+        leerString(nueva.tipo, sizeof(nueva.tipo), "Tipo (Teoria/Laboratorio): ");
+        if (!validarCadenaNoVacia(nueva.tipo, 2)) {
+            printf("Error: El tipo debe tener al menos 2 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nueva.tipo, 2));
+
     nueva.activo = 1;
 
     aulas[total] = nueva;
@@ -97,9 +117,28 @@ void editarAula(Usuario usuario_actual) {
     for (i = 0; i < total; i++) {
         if (strcmp(aulas[i].id, id_buscar) == 0) {
             printf("=== EDITAR AULA %s ===\n", aulas[i].id);
-            leerString(aulas[i].nombre, sizeof(aulas[i].nombre), "Nombre: ");
-            leerEntero(&aulas[i].capacidad, "Capacidad: ");
-            leerString(aulas[i].tipo, sizeof(aulas[i].tipo), "Tipo: ");
+
+            do {
+                leerString(aulas[i].nombre, sizeof(aulas[i].nombre), "Nombre: ");
+                if (!validarCadenaNoVacia(aulas[i].nombre, 2)) {
+                    printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+                }
+            } while (!validarCadenaNoVacia(aulas[i].nombre, 2));
+
+            do {
+                leerEntero(&aulas[i].capacidad, "Capacidad: ");
+                if (aulas[i].capacidad < 1) {
+                    printf("Error: La capacidad debe ser al menos 1.\n");
+                }
+            } while (aulas[i].capacidad < 1);
+
+            do {
+                leerString(aulas[i].tipo, sizeof(aulas[i].tipo), "Tipo: ");
+                if (!validarCadenaNoVacia(aulas[i].tipo, 2)) {
+                    printf("Error: El tipo debe tener al menos 2 caracteres.\n");
+                }
+            } while (!validarCadenaNoVacia(aulas[i].tipo, 2));
+
             guardarAulas(aulas, total);
             printf("Aula actualizada.\n");
             pausar();

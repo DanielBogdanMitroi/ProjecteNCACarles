@@ -67,6 +67,7 @@ void agregarTrabajo(Usuario usuario_actual) {
     Trabajo trabajos[MAX_TRABAJOS];
     int total;
     Trabajo nuevo;
+    int fecha_valida;
     memset(&nuevo, 0, sizeof(Trabajo));
 
     if (usuario_actual.tipo == 3) {
@@ -80,11 +81,48 @@ void agregarTrabajo(Usuario usuario_actual) {
 
     printf("=== AGREGAR TRABAJO ===\n");
     printf("ID generado: %s\n", nuevo.id);
-    leerString(nuevo.id_materia, sizeof(nuevo.id_materia), "ID Materia: ");
-    leerString(nuevo.titulo, sizeof(nuevo.titulo), "Titulo: ");
-    leerString(nuevo.descripcion, sizeof(nuevo.descripcion), "Descripcion: ");
-    leerString(nuevo.fecha_asignacion, sizeof(nuevo.fecha_asignacion), "Fecha asignacion (YYYY-MM-DD): ");
-    leerString(nuevo.fecha_entrega, sizeof(nuevo.fecha_entrega), "Fecha entrega (YYYY-MM-DD): ");
+
+    do {
+        leerString(nuevo.id_materia, sizeof(nuevo.id_materia), "ID Materia: ");
+        if (!validarCadenaNoVacia(nuevo.id_materia, 2)) {
+            printf("Error: El ID de materia no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(nuevo.id_materia, 2));
+
+    do {
+        leerString(nuevo.titulo, sizeof(nuevo.titulo), "Titulo: ");
+        if (!validarCadenaNoVacia(nuevo.titulo, 3)) {
+            printf("Error: El titulo debe tener al menos 3 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nuevo.titulo, 3));
+
+    do {
+        leerString(nuevo.descripcion, sizeof(nuevo.descripcion), "Descripcion: ");
+        if (!validarCadenaNoVacia(nuevo.descripcion, 3)) {
+            printf("Error: La descripcion debe tener al menos 3 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nuevo.descripcion, 3));
+
+    fecha_valida = 0;
+    do {
+        leerString(nuevo.fecha_asignacion, sizeof(nuevo.fecha_asignacion), "Fecha asignacion (YYYY-MM-DD): ");
+        if (!validarFecha(nuevo.fecha_asignacion)) {
+            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
+        } else {
+            fecha_valida = 1;
+        }
+    } while (!fecha_valida);
+
+    fecha_valida = 0;
+    do {
+        leerString(nuevo.fecha_entrega, sizeof(nuevo.fecha_entrega), "Fecha entrega (YYYY-MM-DD): ");
+        if (!validarFecha(nuevo.fecha_entrega)) {
+            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
+        } else {
+            fecha_valida = 1;
+        }
+    } while (!fecha_valida);
+
     leerFloat(&nuevo.puntuacion_maxima, "Puntuacion maxima: ");
     nuevo.activo = 1;
 

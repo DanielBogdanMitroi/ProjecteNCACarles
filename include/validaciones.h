@@ -8,4 +8,6 @@ int validarCreditos(int creditos);
 int validarHora(const char hora[]);
 int validarPassword(const char password[]);
 int existeID(const char archivo[], const char id[]);
+int validarCadenaNoVacia(const char cadena[], int longitud_minima);
+int emailYaExiste(const char email[], const char archivo[], const char id_actual[]);
 #endif

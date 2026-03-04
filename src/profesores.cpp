@@ -94,6 +94,7 @@ void agregarProfesor() {
     Profesor profesores[MAX_PROFESORES];
     int total;
     Profesor nuevo;
+    int email_valido, telefono_valido;
     memset(&nuevo, 0, sizeof(Profesor));
 
     cargarProfesores(profesores, &total);
@@ -101,16 +102,58 @@ void agregarProfesor() {
 
     printf("=== AGREGAR PROFESOR ===\n");
     printf("ID generado: %s\n", nuevo.id);
-    leerString(nuevo.nombre, sizeof(nuevo.nombre), "Nombre: ");
-    leerString(nuevo.apellido, sizeof(nuevo.apellido), "Apellido: ");
-    leerString(nuevo.email, sizeof(nuevo.email), "Email: ");
-    if (!validarEmail(nuevo.email)) {
-        printf("Email invalido.\n");
-        pausar();
-        return;
-    }
-    leerString(nuevo.especialidad, sizeof(nuevo.especialidad), "Especialidad: ");
-    leerString(nuevo.telefono, sizeof(nuevo.telefono), "Telefono: ");
+
+    do {
+        leerString(nuevo.nombre, sizeof(nuevo.nombre), "Nombre: ");
+        if (!validarCadenaNoVacia(nuevo.nombre, 2)) {
+            printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nuevo.nombre, 2));
+
+    do {
+        leerString(nuevo.apellido, sizeof(nuevo.apellido), "Apellido: ");
+        if (!validarCadenaNoVacia(nuevo.apellido, 2)) {
+            printf("Error: El apellido debe tener al menos 2 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nuevo.apellido, 2));
+
+    email_valido = 0;
+    do {
+        leerString(nuevo.email, sizeof(nuevo.email), "Email: ");
+        if (!validarCadenaNoVacia(nuevo.email, 5)) {
+            printf("Error: El email no puede estar vacio.\n");
+            continue;
+        }
+        if (!validarEmail(nuevo.email)) {
+            printf("Error: Formato de email invalido. Formato correcto: usuario@dominio.com\n");
+        } else if (emailYaExiste(nuevo.email, ARCHIVO_PROFESORES, "")) {
+            printf("Error: Ya existe un profesor con ese email.\n");
+        } else {
+            email_valido = 1;
+        }
+    } while (!email_valido);
+
+    do {
+        leerString(nuevo.especialidad, sizeof(nuevo.especialidad), "Especialidad: ");
+        if (!validarCadenaNoVacia(nuevo.especialidad, 2)) {
+            printf("Error: La especialidad debe tener al menos 2 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nuevo.especialidad, 2));
+
+    telefono_valido = 0;
+    do {
+        leerString(nuevo.telefono, sizeof(nuevo.telefono), "Telefono: ");
+        if (!validarCadenaNoVacia(nuevo.telefono, 9)) {
+            printf("Error: El telefono debe tener al menos 9 caracteres.\n");
+            continue;
+        }
+        if (!validarTelefono(nuevo.telefono)) {
+            printf("Error: Formato de telefono invalido.\n");
+        } else {
+            telefono_valido = 1;
+        }
+    } while (!telefono_valido);
+
     nuevo.activo = 1;
 
     profesores[total] = nuevo;
@@ -125,6 +168,7 @@ void editarProfesor() {
     Profesor profesores[MAX_PROFESORES];
     int total, i;
     char id_buscar[20];
+    int email_valido, telefono_valido;
 
     cargarProfesores(profesores, &total);
     leerString(id_buscar, sizeof(id_buscar), "ID del profesor a editar: ");
@@ -132,11 +176,58 @@ void editarProfesor() {
     for (i = 0; i < total; i++) {
         if (strcmp(profesores[i].id, id_buscar) == 0) {
             printf("=== EDITAR PROFESOR %s ===\n", profesores[i].id);
-            leerString(profesores[i].nombre, sizeof(profesores[i].nombre), "Nombre: ");
-            leerString(profesores[i].apellido, sizeof(profesores[i].apellido), "Apellido: ");
-            leerString(profesores[i].email, sizeof(profesores[i].email), "Email: ");
-            leerString(profesores[i].especialidad, sizeof(profesores[i].especialidad), "Especialidad: ");
-            leerString(profesores[i].telefono, sizeof(profesores[i].telefono), "Telefono: ");
+
+            do {
+                leerString(profesores[i].nombre, sizeof(profesores[i].nombre), "Nombre: ");
+                if (!validarCadenaNoVacia(profesores[i].nombre, 2)) {
+                    printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+                }
+            } while (!validarCadenaNoVacia(profesores[i].nombre, 2));
+
+            do {
+                leerString(profesores[i].apellido, sizeof(profesores[i].apellido), "Apellido: ");
+                if (!validarCadenaNoVacia(profesores[i].apellido, 2)) {
+                    printf("Error: El apellido debe tener al menos 2 caracteres.\n");
+                }
+            } while (!validarCadenaNoVacia(profesores[i].apellido, 2));
+
+            email_valido = 0;
+            do {
+                leerString(profesores[i].email, sizeof(profesores[i].email), "Email: ");
+                if (!validarCadenaNoVacia(profesores[i].email, 5)) {
+                    printf("Error: El email no puede estar vacio.\n");
+                    continue;
+                }
+                if (!validarEmail(profesores[i].email)) {
+                    printf("Error: Formato de email invalido. Formato correcto: usuario@dominio.com\n");
+                } else if (emailYaExiste(profesores[i].email, ARCHIVO_PROFESORES, profesores[i].id)) {
+                    printf("Error: Ya existe un profesor con ese email.\n");
+                } else {
+                    email_valido = 1;
+                }
+            } while (!email_valido);
+
+            do {
+                leerString(profesores[i].especialidad, sizeof(profesores[i].especialidad), "Especialidad: ");
+                if (!validarCadenaNoVacia(profesores[i].especialidad, 2)) {
+                    printf("Error: La especialidad debe tener al menos 2 caracteres.\n");
+                }
+            } while (!validarCadenaNoVacia(profesores[i].especialidad, 2));
+
+            telefono_valido = 0;
+            do {
+                leerString(profesores[i].telefono, sizeof(profesores[i].telefono), "Telefono: ");
+                if (!validarCadenaNoVacia(profesores[i].telefono, 9)) {
+                    printf("Error: El telefono debe tener al menos 9 caracteres.\n");
+                    continue;
+                }
+                if (!validarTelefono(profesores[i].telefono)) {
+                    printf("Error: Formato de telefono invalido.\n");
+                } else {
+                    telefono_valido = 1;
+                }
+            } while (!telefono_valido);
+
             guardarProfesores(profesores, total);
             printf("Profesor actualizado.\n");
             pausar();
