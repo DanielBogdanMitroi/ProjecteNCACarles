@@ -45,19 +45,34 @@ void menuAlumnos(Usuario usuario_actual) {
 /* Lista todos los alumnos activos */
 void listarAlumnos() {
     Alumno alumnos[MAX_ALUMNOS];
-    int total, i;
+    int total, i, activos = 0;
     cargarAlumnos(alumnos, &total);
     limpiarPantalla();
     printf("=== LISTA DE ALUMNOS ===\n");
+    printf("Total de registros en archivo: %d\n", total);
     printf("%-10s %-20s %-20s %-30s\n", "ID", "Nombre", "Apellido", "Email");
     printf("%-10s %-20s %-20s %-30s\n", "------", "------", "-------", "-----");
     for (i = 0; i < total; i++) {
         if (alumnos[i].activo) {
             printf("%-10s %-20s %-20s %-30s\n",
                    alumnos[i].id, alumnos[i].nombre, alumnos[i].apellido, alumnos[i].email);
+            activos++;
         }
     }
-    printf("\nTotal activos mostrados.\n");
+    if (activos == 0) {
+        if (total == 0) {
+            printf("\nNo hay alumnos registrados en el sistema.\n");
+            printf("Usa la opcion 'Agregar alumno' para crear el primer registro.\n");
+        } else {
+            printf("\nTodos los alumnos estan marcados como inactivos.\n");
+            printf("Total de registros inactivos: %d\n", total);
+        }
+    } else {
+        printf("\nTotal de alumnos activos: %d\n", activos);
+        if (total > activos) {
+            printf("Alumnos inactivos: %d\n", total - activos);
+        }
+    }
     pausar();
 }
 

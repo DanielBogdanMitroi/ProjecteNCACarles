@@ -34,10 +34,11 @@ void menuPeriodos(Usuario usuario_actual) {
 /* Lista todos los periodos */
 void listarPeriodos() {
     Periodo periodos[MAX_PERIODOS];
-    int total, i;
+    int total, i, activos = 0;
     cargarPeriodos(periodos, &total);
     limpiarPantalla();
     printf("=== LISTA DE PERIODOS ===\n");
+    printf("Total de registros en archivo: %d\n", total);
     printf("%-10s %-30s %-11s %-11s %-8s\n",
            "ID", "Nombre", "Inicio", "Fin", "Estado");
     printf("%-10s %-30s %-11s %-11s %-8s\n",
@@ -47,8 +48,15 @@ void listarPeriodos() {
                periodos[i].id, periodos[i].nombre,
                periodos[i].fecha_inicio, periodos[i].fecha_fin,
                periodos[i].activo ? "Activo" : "Inactivo");
+        if (periodos[i].activo) activos++;
     }
-    printf("\nTotal: %d periodos.\n", total);
+    if (total == 0) {
+        printf("\nNo hay periodos registrados en el sistema.\n");
+        printf("Usa la opcion 'Agregar periodo' para crear el primer registro.\n");
+    } else {
+        printf("\nTotal: %d periodos (%d activos, %d inactivos).\n",
+               total, activos, total - activos);
+    }
     pausar();
 }
 

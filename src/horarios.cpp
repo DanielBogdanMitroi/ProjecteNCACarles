@@ -45,6 +45,7 @@ void listarHorarios() {
     cargarHorarios(horarios, &total);
     limpiarPantalla();
     printf("=== LISTA DE HORARIOS ===\n");
+    printf("Total de registros en archivo: %d\n", total);
     printf("%-10s %-10s %-10s %-12s %-8s %-8s %-10s\n",
            "ID", "Materia", "Aula", "Dia", "Inicio", "Fin", "Periodo");
     printf("%-10s %-10s %-10s %-12s %-8s %-8s %-10s\n",
@@ -55,7 +56,12 @@ void listarHorarios() {
                horarios[i].dia_semana, horarios[i].hora_inicio,
                horarios[i].hora_fin, horarios[i].periodo);
     }
-    printf("\nTotal: %d horarios.\n", total);
+    if (total == 0) {
+        printf("\nNo hay horarios registrados en el sistema.\n");
+        printf("Usa la opcion 'Agregar horario' para crear el primer registro.\n");
+    } else {
+        printf("\nTotal: %d horarios.\n", total);
+    }
     pausar();
 }
 
