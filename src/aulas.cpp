@@ -92,11 +92,11 @@ void agregarAula(Usuario usuario_actual) {
     } while (!validarCadenaNoVacia(nueva.nombre, 2));
 
     do {
-        leerEntero(&nueva.capacidad, "Capacidad: ");
-        if (nueva.capacidad < 1) {
-            printf("Error: La capacidad debe ser al menos 1.\n");
+        leerEntero(&nueva.capacidad, "Capacidad (1-500): ");
+        if (nueva.capacidad < 1 || nueva.capacidad > 500) {
+            printf("Error: La capacidad debe estar entre 1 y 500.\n");
         }
-    } while (nueva.capacidad < 1);
+    } while (nueva.capacidad < 1 || nueva.capacidad > 500);
 
     do {
         leerString(nueva.tipo, sizeof(nueva.tipo), "Tipo (Teoria/Laboratorio): ");
@@ -119,6 +119,8 @@ void editarAula(Usuario usuario_actual) {
     Aula aulas[MAX_AULAS];
     int total, i;
     char id_buscar[20];
+    char temp_str[50];
+    int temp_int;
 
     if (usuario_actual.tipo != 1) {
         printf("Sin permisos para editar aulas.\n");
@@ -127,32 +129,56 @@ void editarAula(Usuario usuario_actual) {
     }
 
     cargarAulas(aulas, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID del aula a editar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID del aula a editar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(aulas[i].id, id_buscar) == 0) {
             printf("=== EDITAR AULA %s ===\n", aulas[i].id);
+            printf("(Presione Enter para mantener el valor actual)\n\n");
 
+            mostrarValorActual("Nombre actual", aulas[i].nombre);
             do {
-                leerString(aulas[i].nombre, sizeof(aulas[i].nombre), "Nombre: ");
-                if (!validarCadenaNoVacia(aulas[i].nombre, 2)) {
+                leerString(temp_str, sizeof(temp_str), "Nuevo nombre: ");
+                if (strlen(temp_str) == 0) break;
+                if (!validarCadenaNoVacia(temp_str, 2)) {
                     printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+                } else {
+                    strcpy(aulas[i].nombre, temp_str);
+                    break;
                 }
-            } while (!validarCadenaNoVacia(aulas[i].nombre, 2));
+            } while (1);
 
-            do {
-                leerEntero(&aulas[i].capacidad, "Capacidad: ");
-                if (aulas[i].capacidad < 1) {
-                    printf("Error: La capacidad debe ser al menos 1.\n");
-                }
-            } while (aulas[i].capacidad < 1);
+            mostrarValorActualEntero("Capacidad actual", aulas[i].capacidad);
+            printf("Nueva capacidad (1-500, 0 para mantener): ");
+            leerEntero(&temp_int, "");
+            if (temp_int != 0) {
+                do {
+                    if (temp_int < 1 || temp_int > 500) {
+                        printf("Error: La capacidad debe estar entre 1 y 500.\n");
+                        leerEntero(&temp_int, "Nueva capacidad (1-500): ");
+                    } else {
+                        aulas[i].capacidad = temp_int;
+                        break;
+                    }
+                } while (temp_int < 1 || temp_int > 500);
+            }
 
+            mostrarValorActual("Tipo actual", aulas[i].tipo);
             do {
-                leerString(aulas[i].tipo, sizeof(aulas[i].tipo), "Tipo: ");
-                if (!validarCadenaNoVacia(aulas[i].tipo, 2)) {
+                leerString(temp_str, sizeof(temp_str), "Nuevo tipo: ");
+                if (strlen(temp_str) == 0) break;
+                if (!validarCadenaNoVacia(temp_str, 2)) {
                     printf("Error: El tipo debe tener al menos 2 caracteres.\n");
+                } else {
+                    strcpy(aulas[i].tipo, temp_str);
+                    break;
                 }
-            } while (!validarCadenaNoVacia(aulas[i].tipo, 2));
+            } while (1);
 
             guardarAulas(aulas, total);
             printf("Aula actualizada.\n");
@@ -169,7 +195,6 @@ void eliminarAula(Usuario usuario_actual) {
     Aula aulas[MAX_AULAS];
     int total, i;
     char id_buscar[20];
-    char confirmacion[5];
 
     if (usuario_actual.tipo != 1) {
         printf("Sin permisos para eliminar aulas.\n");
@@ -178,13 +203,18 @@ void eliminarAula(Usuario usuario_actual) {
     }
 
     cargarAulas(aulas, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID del aula a eliminar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID del aula a eliminar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(aulas[i].id, id_buscar) == 0) {
-            printf("Desea eliminar el aula %s? (s/n): ", aulas[i].nombre);
-            leerString(confirmacion, sizeof(confirmacion), "");
-            if (confirmacion[0] == 's' || confirmacion[0] == 'S') {
+            char msg[100];
+            sprintf(msg, "Desea eliminar el aula %s? (s/n): ", aulas[i].nombre);
+            if (solicitarConfirmacion(msg)) {
                 aulas[i].activo = 0;
                 guardarAulas(aulas, total);
                 printf("Aula desactivada.\n");

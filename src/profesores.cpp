@@ -83,7 +83,12 @@ void buscarProfesor() {
     int total, i, encontrado = 0;
     char busqueda[50];
     cargarProfesores(profesores, &total);
-    leerString(busqueda, sizeof(busqueda), "Ingrese ID o nombre del profesor: ");
+    do {
+        leerString(busqueda, sizeof(busqueda), "Ingrese ID o nombre del profesor: ");
+        if (!validarCadenaNoVacia(busqueda, 1)) {
+            printf("Error: La busqueda no puede estar vacia.\n");
+        }
+    } while (!validarCadenaNoVacia(busqueda, 1));
     limpiarPantalla();
     printf("=== RESULTADOS DE BUSQUEDA ===\n");
     for (i = 0; i < total; i++) {
@@ -183,62 +188,82 @@ void editarProfesor() {
     Profesor profesores[MAX_PROFESORES];
     int total, i;
     char id_buscar[20];
+    char temp[200];
     int email_valido, telefono_valido;
 
     cargarProfesores(profesores, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID del profesor a editar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID del profesor a editar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(profesores[i].id, id_buscar) == 0) {
             printf("=== EDITAR PROFESOR %s ===\n", profesores[i].id);
+            printf("(Presione Enter para mantener el valor actual)\n\n");
 
+            mostrarValorActual("Nombre actual", profesores[i].nombre);
             do {
-                leerString(profesores[i].nombre, sizeof(profesores[i].nombre), "Nombre: ");
-                if (!validarCadenaNoVacia(profesores[i].nombre, 2)) {
+                leerString(temp, sizeof(temp), "Nuevo nombre: ");
+                if (strlen(temp) == 0) break;
+                if (!validarCadenaNoVacia(temp, 2)) {
                     printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+                } else {
+                    strcpy(profesores[i].nombre, temp);
+                    break;
                 }
-            } while (!validarCadenaNoVacia(profesores[i].nombre, 2));
+            } while (1);
 
+            mostrarValorActual("Apellido actual", profesores[i].apellido);
             do {
-                leerString(profesores[i].apellido, sizeof(profesores[i].apellido), "Apellido: ");
-                if (!validarCadenaNoVacia(profesores[i].apellido, 2)) {
+                leerString(temp, sizeof(temp), "Nuevo apellido: ");
+                if (strlen(temp) == 0) break;
+                if (!validarCadenaNoVacia(temp, 2)) {
                     printf("Error: El apellido debe tener al menos 2 caracteres.\n");
+                } else {
+                    strcpy(profesores[i].apellido, temp);
+                    break;
                 }
-            } while (!validarCadenaNoVacia(profesores[i].apellido, 2));
+            } while (1);
 
+            mostrarValorActual("Email actual", profesores[i].email);
             email_valido = 0;
             do {
-                leerString(profesores[i].email, sizeof(profesores[i].email), "Email: ");
-                if (!validarCadenaNoVacia(profesores[i].email, 5)) {
-                    printf("Error: El email no puede estar vacio.\n");
-                    continue;
-                }
-                if (!validarEmail(profesores[i].email)) {
+                leerString(temp, sizeof(temp), "Nuevo email: ");
+                if (strlen(temp) == 0) { email_valido = 1; break; }
+                if (!validarEmail(temp)) {
                     printf("Error: Formato de email invalido. Formato correcto: usuario@dominio.com\n");
-                } else if (emailYaExiste(profesores[i].email, ARCHIVO_PROFESORES, profesores[i].id)) {
+                } else if (emailYaExiste(temp, ARCHIVO_PROFESORES, profesores[i].id)) {
                     printf("Error: Ya existe un profesor con ese email.\n");
                 } else {
+                    strcpy(profesores[i].email, temp);
                     email_valido = 1;
                 }
             } while (!email_valido);
 
+            mostrarValorActual("Especialidad actual", profesores[i].especialidad);
             do {
-                leerString(profesores[i].especialidad, sizeof(profesores[i].especialidad), "Especialidad: ");
-                if (!validarCadenaNoVacia(profesores[i].especialidad, 2)) {
+                leerString(temp, sizeof(temp), "Nueva especialidad: ");
+                if (strlen(temp) == 0) break;
+                if (!validarCadenaNoVacia(temp, 2)) {
                     printf("Error: La especialidad debe tener al menos 2 caracteres.\n");
+                } else {
+                    strcpy(profesores[i].especialidad, temp);
+                    break;
                 }
-            } while (!validarCadenaNoVacia(profesores[i].especialidad, 2));
+            } while (1);
 
+            mostrarValorActual("Telefono actual", profesores[i].telefono);
             telefono_valido = 0;
             do {
-                leerString(profesores[i].telefono, sizeof(profesores[i].telefono), "Telefono: ");
-                if (!validarCadenaNoVacia(profesores[i].telefono, 9)) {
-                    printf("Error: El telefono debe tener al menos 9 caracteres.\n");
-                    continue;
-                }
-                if (!validarTelefono(profesores[i].telefono)) {
+                leerString(temp, sizeof(temp), "Nuevo telefono: ");
+                if (strlen(temp) == 0) { telefono_valido = 1; break; }
+                if (!validarTelefono(temp)) {
                     printf("Error: Formato de telefono invalido.\n");
                 } else {
+                    strcpy(profesores[i].telefono, temp);
                     telefono_valido = 1;
                 }
             } while (!telefono_valido);
@@ -258,16 +283,20 @@ void eliminarProfesor() {
     Profesor profesores[MAX_PROFESORES];
     int total, i;
     char id_buscar[20];
-    char confirmacion[5];
 
     cargarProfesores(profesores, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID del profesor a eliminar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID del profesor a eliminar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(profesores[i].id, id_buscar) == 0) {
-            printf("Desea eliminar a %s %s? (s/n): ", profesores[i].nombre, profesores[i].apellido);
-            leerString(confirmacion, sizeof(confirmacion), "");
-            if (confirmacion[0] == 's' || confirmacion[0] == 'S') {
+            char msg[200];
+            sprintf(msg, "Desea eliminar a %s %s? (s/n): ", profesores[i].nombre, profesores[i].apellido);
+            if (solicitarConfirmacion(msg)) {
                 profesores[i].activo = 0;
                 guardarProfesores(profesores, total);
                 printf("Profesor desactivado.\n");

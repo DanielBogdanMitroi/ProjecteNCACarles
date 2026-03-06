@@ -28,7 +28,12 @@ void menuHorarios(Usuario usuario_actual) {
             case 4: eliminarHorario(usuario_actual); break;
             case 5: {
                 char id[20];
-                leerString(id, sizeof(id), "ID de la materia: ");
+                do {
+                    leerString(id, sizeof(id), "ID de la materia: ");
+                    if (!validarCadenaNoVacia(id, 1)) {
+                        printf("Error: El ID no puede estar vacio.\n");
+                    }
+                } while (!validarCadenaNoVacia(id, 1));
                 verHorarioMateria(id);
                 break;
             }
@@ -88,22 +93,34 @@ void agregarHorario(Usuario usuario_actual) {
         leerString(nuevo.id_materia, sizeof(nuevo.id_materia), "ID Materia: ");
         if (!validarCadenaNoVacia(nuevo.id_materia, 2)) {
             printf("Error: El ID de materia no puede estar vacio.\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.id_materia, 2));
+        if (!existeIDEnArchivo(ARCHIVO_MATERIAS, nuevo.id_materia)) {
+            printf("Error: No existe una materia con ID %s.\n", nuevo.id_materia);
+        } else {
+            break;
+        }
+    } while (1);
 
     do {
         leerString(nuevo.id_aula, sizeof(nuevo.id_aula), "ID Aula: ");
         if (!validarCadenaNoVacia(nuevo.id_aula, 2)) {
             printf("Error: El ID de aula no puede estar vacio.\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.id_aula, 2));
+        if (!existeIDEnArchivo(ARCHIVO_AULAS, nuevo.id_aula)) {
+            printf("Error: No existe un aula con ID %s.\n", nuevo.id_aula);
+        } else {
+            break;
+        }
+    } while (1);
 
     do {
-        leerString(nuevo.dia_semana, sizeof(nuevo.dia_semana), "Dia semana (Lunes/Martes/...): ");
-        if (!validarCadenaNoVacia(nuevo.dia_semana, 5)) {
-            printf("Error: El dia de la semana debe tener al menos 5 caracteres.\n");
+        leerString(nuevo.dia_semana, sizeof(nuevo.dia_semana), "Dia semana (Lunes/Martes/Miercoles/Jueves/Viernes/Sabado/Domingo): ");
+        if (!validarDiaSemana(nuevo.dia_semana)) {
+            printf("Error: Dia invalido. Use: Lunes, Martes, Miercoles, Jueves, Viernes, Sabado, Domingo.\n");
         }
-    } while (!validarCadenaNoVacia(nuevo.dia_semana, 5));
+    } while (!validarDiaSemana(nuevo.dia_semana));
 
     do {
         leerString(nuevo.hora_inicio, sizeof(nuevo.hora_inicio), "Hora inicio (HH:MM): ");
@@ -116,8 +133,12 @@ void agregarHorario(Usuario usuario_actual) {
         leerString(nuevo.hora_fin, sizeof(nuevo.hora_fin), "Hora fin (HH:MM): ");
         if (!validarHora(nuevo.hora_fin)) {
             printf("Error: Hora de fin invalida. Formato: HH:MM\n");
+        } else if (!validarHoraRango(nuevo.hora_inicio, nuevo.hora_fin)) {
+            printf("Error: La hora de fin debe ser posterior a la hora de inicio (%s).\n", nuevo.hora_inicio);
+        } else {
+            break;
         }
-    } while (!validarHora(nuevo.hora_fin));
+    } while (1);
 
     do {
         leerString(nuevo.periodo, sizeof(nuevo.periodo), "Periodo: ");
@@ -138,6 +159,7 @@ void editarHorario(Usuario usuario_actual) {
     Horario horarios[MAX_HORARIOS];
     int total, i;
     char id_buscar[20];
+    char temp[20];
 
     if (usuario_actual.tipo != 1) {
         printf("Sin permisos para editar horarios.\n");
@@ -146,15 +168,69 @@ void editarHorario(Usuario usuario_actual) {
     }
 
     cargarHorarios(horarios, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID del horario a editar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID del horario a editar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(horarios[i].id, id_buscar) == 0) {
             printf("=== EDITAR HORARIO %s ===\n", horarios[i].id);
-            leerString(horarios[i].dia_semana, sizeof(horarios[i].dia_semana), "Dia semana: ");
-            leerString(horarios[i].hora_inicio, sizeof(horarios[i].hora_inicio), "Hora inicio (HH:MM): ");
-            leerString(horarios[i].hora_fin, sizeof(horarios[i].hora_fin), "Hora fin (HH:MM): ");
-            leerString(horarios[i].periodo, sizeof(horarios[i].periodo), "Periodo: ");
+            printf("(Presione Enter para mantener el valor actual)\n\n");
+
+            mostrarValorActual("Dia semana actual", horarios[i].dia_semana);
+            do {
+                leerString(temp, sizeof(temp), "Nuevo dia semana: ");
+                if (strlen(temp) == 0) break;
+                if (!validarDiaSemana(temp)) {
+                    printf("Error: Dia invalido. Use: Lunes, Martes, Miercoles, Jueves, Viernes, Sabado, Domingo.\n");
+                } else {
+                    strcpy(horarios[i].dia_semana, temp);
+                    break;
+                }
+            } while (1);
+
+            mostrarValorActual("Hora inicio actual", horarios[i].hora_inicio);
+            do {
+                leerString(temp, sizeof(temp), "Nueva hora inicio (HH:MM): ");
+                if (strlen(temp) == 0) break;
+                if (!validarHora(temp)) {
+                    printf("Error: Hora invalida. Formato: HH:MM\n");
+                } else {
+                    strcpy(horarios[i].hora_inicio, temp);
+                    break;
+                }
+            } while (1);
+
+            mostrarValorActual("Hora fin actual", horarios[i].hora_fin);
+            do {
+                leerString(temp, sizeof(temp), "Nueva hora fin (HH:MM): ");
+                if (strlen(temp) == 0) break;
+                if (!validarHora(temp)) {
+                    printf("Error: Hora invalida. Formato: HH:MM\n");
+                } else if (!validarHoraRango(horarios[i].hora_inicio, temp)) {
+                    printf("Error: La hora de fin debe ser posterior a la hora de inicio (%s).\n",
+                           horarios[i].hora_inicio);
+                } else {
+                    strcpy(horarios[i].hora_fin, temp);
+                    break;
+                }
+            } while (1);
+
+            mostrarValorActual("Periodo actual", horarios[i].periodo);
+            do {
+                leerString(temp, sizeof(temp), "Nuevo periodo: ");
+                if (strlen(temp) == 0) break;
+                if (!validarCadenaNoVacia(temp, 2)) {
+                    printf("Error: El periodo no puede estar vacio.\n");
+                } else {
+                    strcpy(horarios[i].periodo, temp);
+                    break;
+                }
+            } while (1);
+
             guardarHorarios(horarios, total);
             printf("Horario actualizado.\n");
             pausar();
@@ -170,7 +246,6 @@ void eliminarHorario(Usuario usuario_actual) {
     Horario horarios[MAX_HORARIOS];
     int total, i, j;
     char id_buscar[20];
-    char confirmacion[5];
 
     if (usuario_actual.tipo != 1) {
         printf("Sin permisos para eliminar horarios.\n");
@@ -179,13 +254,18 @@ void eliminarHorario(Usuario usuario_actual) {
     }
 
     cargarHorarios(horarios, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID del horario a eliminar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID del horario a eliminar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(horarios[i].id, id_buscar) == 0) {
-            printf("Confirmar eliminacion del horario %s? (s/n): ", id_buscar);
-            leerString(confirmacion, sizeof(confirmacion), "");
-            if (confirmacion[0] == 's' || confirmacion[0] == 'S') {
+            char msg[100];
+            sprintf(msg, "Confirmar eliminacion del horario %s? (s/n): ", id_buscar);
+            if (solicitarConfirmacion(msg)) {
                 for (j = i; j < total - 1; j++) {
                     horarios[j] = horarios[j + 1];
                 }
@@ -207,6 +287,11 @@ void eliminarHorario(Usuario usuario_actual) {
 void verHorarioMateria(const char id_materia[]) {
     Horario horarios[MAX_HORARIOS];
     int total, i, encontrado = 0;
+    if (!validarCadenaNoVacia(id_materia, 1)) {
+        printf("Error: El ID de materia no puede estar vacio.\n");
+        pausar();
+        return;
+    }
     cargarHorarios(horarios, &total);
     limpiarPantalla();
     printf("=== HORARIO DE MATERIA %s ===\n", id_materia);

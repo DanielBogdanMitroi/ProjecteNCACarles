@@ -83,3 +83,29 @@ void convertirAMinusculas(char str[]) {
 int compararStrings(const char str1[], const char str2[]) {
     return strcmp(str1, str2);
 }
+
+/* Muestra el valor actual de un campo de texto */
+void mostrarValorActual(const char campo[], const char valor[]) {
+    printf("%s: %s\n", campo, valor);
+}
+
+/* Muestra el valor actual de un campo entero */
+void mostrarValorActualEntero(const char campo[], int valor) {
+    printf("%s: %d\n", campo, valor);
+}
+
+/* Muestra el valor actual de un campo flotante */
+void mostrarValorActualFloat(const char campo[], float valor) {
+    printf("%s: %.2f\n", campo, valor);
+}
+
+/* Solicita una confirmacion robusta (s/n) */
+int solicitarConfirmacion(const char mensaje[]) {
+    char resp[10];
+    do {
+        leerString(resp, sizeof(resp), mensaje);
+        if (resp[0] == 's' || resp[0] == 'S') return 1;
+        if (resp[0] == 'n' || resp[0] == 'N') return 0;
+        printf("Error: Responda con 's' o 'n'.\n");
+    } while (1);
+}
