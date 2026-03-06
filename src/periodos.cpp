@@ -74,7 +74,7 @@ void agregarPeriodo(Usuario usuario_actual) {
     }
 
     cargarPeriodos(periodos, &total);
-    generarID(nuevo.id, "PER", total + 1);
+    generarID(nuevo.id, "PER", obtenerSiguienteNumeroID(ARCHIVO_PERIODOS, "PER"));
 
     printf("=== AGREGAR PERIODO ===\n");
     printf("ID generado: %s\n", nuevo.id);

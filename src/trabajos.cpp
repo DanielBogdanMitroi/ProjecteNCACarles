@@ -96,7 +96,7 @@ void agregarTrabajo(Usuario usuario_actual) {
     }
 
     cargarTrabajos(trabajos, &total);
-    generarID(nuevo.id, "TRAB", total + 1);
+    generarID(nuevo.id, "TRAB", obtenerSiguienteNumeroID(ARCHIVO_TRABAJOS, "TRAB"));
 
     printf("=== AGREGAR TRABAJO ===\n");
     printf("ID generado: %s\n", nuevo.id);
@@ -364,7 +364,7 @@ void registrarEntrega(Usuario usuario_actual) {
 
     cargarEntregas(entregas, &total);
     cargarTrabajos(trabajos, &total_t);
-    generarID(nueva.id, "ENTR", total + 1);
+    generarID(nueva.id, "ENTR", obtenerSiguienteNumeroID(ARCHIVO_ENTREGAS, "ENTR"));
 
     printf("=== REGISTRAR ENTREGA ===\n");
     printf("ID generado: %s\n", nueva.id);

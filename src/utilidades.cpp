@@ -63,6 +63,30 @@ void generarID(char resultado[], const char prefijo[], int numero) {
     sprintf(resultado, "%s%03d", prefijo, numero);
 }
 
+/* Obtiene el siguiente numero de ID para un prefijo dado en un archivo */
+int obtenerSiguienteNumeroID(const char archivo[], const char prefijo[]) {
+    FILE *f = fopen(archivo, "r");
+    char linea[512];
+    char id[20];
+    int num, max_num = 0;
+    int prefijo_len = (int)strlen(prefijo);
+
+    if (f == NULL) return 1;
+
+    while (fgets(linea, sizeof(linea), f)) {
+        if (strlen(linea) > 1) {
+            id[0] = '\0';
+            sscanf(linea, "%19[^|]", id);
+            if (strncmp(id, prefijo, prefijo_len) == 0) {
+                num = atoi(id + prefijo_len);
+                if (num > max_num) max_num = num;
+            }
+        }
+    }
+    fclose(f);
+    return max_num + 1;
+}
+
 /* Convierte una cadena a mayusculas */
 void convertirAMayusculas(char str[]) {
     int i;

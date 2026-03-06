@@ -83,25 +83,25 @@ void crearArchivosIniciales() {
 void diagnosticarCargaArchivo(const char archivo[]) {
     FILE *f = fopen(archivo, "r");
     if (f == NULL) {
-        printf("[DEBUG] No se pudo abrir el archivo: %s\n", archivo);
-        printf("[DEBUG] Verifica que el directorio 'datos/' exista.\n");
+        printf("No se pudo abrir el archivo: %s\n", archivo);
+        printf("Verifica que el directorio 'datos/' exista.\n");
         return;
     }
 
     char linea[512];
     int lineas = 0;
-    printf("[DEBUG] Archivo abierto correctamente: %s\n", archivo);
+    printf("Archivo abierto correctamente: %s\n", archivo);
 
     while (fgets(linea, sizeof(linea), f)) {
         if (strlen(linea) > 1) {
             lineas++;
             if (lineas <= 3) {
-                printf("[DEBUG] Linea %d: %s", lineas, linea);
+                printf("Linea %d: %s", lineas, linea);
             }
         }
     }
 
-    printf("[DEBUG] Total de lineas validas: %d\n", lineas);
+    printf("Total de lineas validas: %d\n", lineas);
     fclose(f);
 }
 
@@ -116,12 +116,9 @@ int cargarAlumnos(Alumno alumnos[], int *total) {
     FILE *f = fopen(ARCHIVO_ALUMNOS, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_ALUMNOS);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_ALUMNOS);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_ALUMNOS) {
         if (strlen(linea) > 1) {
             parsearAlumno(linea, &alumnos[*total]);
@@ -157,12 +154,9 @@ int cargarProfesores(Profesor profesores[], int *total) {
     FILE *f = fopen(ARCHIVO_PROFESORES, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_PROFESORES);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_PROFESORES);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_PROFESORES) {
         if (strlen(linea) > 1) {
             parsearProfesor(linea, &profesores[*total]);
@@ -197,12 +191,9 @@ int cargarMaterias(Materia materias[], int *total) {
     FILE *f = fopen(ARCHIVO_MATERIAS, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_MATERIAS);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_MATERIAS);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_MATERIAS) {
         if (strlen(linea) > 1) {
             parsearMateria(linea, &materias[*total]);
@@ -238,12 +229,9 @@ int cargarNotas(Nota notas[], int *total) {
     FILE *f = fopen(ARCHIVO_NOTAS, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_NOTAS);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_NOTAS);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_NOTAS) {
         if (strlen(linea) > 1) {
             parsearNota(linea, &notas[*total]);
@@ -279,12 +267,9 @@ int cargarTrabajos(Trabajo trabajos[], int *total) {
     FILE *f = fopen(ARCHIVO_TRABAJOS, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_TRABAJOS);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_TRABAJOS);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_TRABAJOS) {
         if (strlen(linea) > 1) {
             parsearTrabajo(linea, &trabajos[*total]);
@@ -321,12 +306,9 @@ int cargarEntregas(Entrega_Trabajo entregas[], int *total) {
     FILE *f = fopen(ARCHIVO_ENTREGAS, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_ENTREGAS);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_ENTREGAS);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_ENTREGAS) {
         if (strlen(linea) > 1) {
             parsearEntrega(linea, &entregas[*total]);
@@ -364,12 +346,9 @@ int cargarAsistencias(Asistencia asistencias[], int *total) {
     FILE *f = fopen(ARCHIVO_ASISTENCIAS, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_ASISTENCIAS);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_ASISTENCIAS);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_ASISTENCIAS) {
         if (strlen(linea) > 1) {
             parsearAsistencia(linea, &asistencias[*total]);
@@ -405,12 +384,9 @@ int cargarHorarios(Horario horarios[], int *total) {
     FILE *f = fopen(ARCHIVO_HORARIOS, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_HORARIOS);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_HORARIOS);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_HORARIOS) {
         if (strlen(linea) > 1) {
             parsearHorario(linea, &horarios[*total]);
@@ -445,12 +421,9 @@ int cargarAulas(Aula aulas[], int *total) {
     FILE *f = fopen(ARCHIVO_AULAS, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_AULAS);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_AULAS);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_AULAS) {
         if (strlen(linea) > 1) {
             parsearAula(linea, &aulas[*total]);
@@ -485,12 +458,9 @@ int cargarPeriodos(Periodo periodos[], int *total) {
     FILE *f = fopen(ARCHIVO_PERIODOS, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_PERIODOS);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_PERIODOS);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_PERIODOS) {
         if (strlen(linea) > 1) {
             parsearPeriodo(linea, &periodos[*total]);
@@ -525,12 +495,9 @@ int cargarMatriculas(Matricula matriculas[], int *total) {
     FILE *f = fopen(ARCHIVO_MATRICULAS, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_MATRICULAS);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_MATRICULAS);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_MATRICULAS) {
         if (strlen(linea) > 1) {
             parsearMatricula(linea, &matriculas[*total]);
@@ -565,12 +532,9 @@ int cargarProfesorMaterias(Profesor_Materia pm[], int *total) {
     FILE *f = fopen(ARCHIVO_PROF_MATERIA, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_PROF_MATERIA);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_PROF_MATERIA);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_PROFESOR_MATERIA) {
         if (strlen(linea) > 1) {
             parsearProfesorMateria(linea, &pm[*total]);
@@ -605,12 +569,9 @@ int cargarUsuarios(Usuario usuarios[], int *total) {
     FILE *f = fopen(ARCHIVO_USUARIOS, "r");
     char linea[512];
     *total = 0;
-    DEBUG_PRINT("Intentando abrir: %s\n", ARCHIVO_USUARIOS);
     if (f == NULL) {
-        DEBUG_PRINT("Error: No se pudo abrir %s\n", ARCHIVO_USUARIOS);
         return 0;
     }
-    DEBUG_PRINT("Archivo abierto correctamente\n");
     while (fgets(linea, sizeof(linea), f) && *total < MAX_USUARIOS) {
         if (strlen(linea) > 1) {
             parsearUsuario(linea, &usuarios[*total]);

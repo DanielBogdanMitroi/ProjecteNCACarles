@@ -117,7 +117,7 @@ void agregarAlumno() {
     memset(&nuevo, 0, sizeof(Alumno));
 
     cargarAlumnos(alumnos, &total);
-    generarID(nuevo.id, "ALU", total + 1);
+    generarID(nuevo.id, "ALU", obtenerSiguienteNumeroID(ARCHIVO_ALUMNOS, "ALU"));
 
     printf("=== AGREGAR ALUMNO ===\n");
     printf("ID generado: %s\n", nuevo.id);
@@ -125,31 +125,18 @@ void agregarAlumno() {
     do {
         leerString(nuevo.nombre, sizeof(nuevo.nombre), "Nombre: ");
 
-        // DEBUG: Show what was read
-        printf("[DEBUG] Valor leido: '%s'\n", nuevo.nombre);
-        printf("[DEBUG] strlen(nuevo.nombre) = %d\n", (int)strlen(nuevo.nombre));
-        printf("[DEBUG] Bytes: ");
-        for (int i = 0; i < (int)strlen(nuevo.nombre) && i < 20; i++) {
-            printf("%02X ", (unsigned char)nuevo.nombre[i]);
-        }
-        printf("\n");
-
         if (strlen(nuevo.nombre) == 0) {
-            printf("[DEBUG] Entrando en if (strlen == 0)\n");
             printf("\nERROR: El nombre no puede estar vacio.\n");
             printf("   Por favor, introduce un nombre valido.\n\n");
             continue;
         }
-        printf("[DEBUG] Paso la validacion strlen == 0\n");
 
         if (!validarNombreApellido(nuevo.nombre, 2)) {
-            printf("[DEBUG] validarNombreApellido retorno FALSE\n");
             printf("\nERROR: El nombre debe tener al menos 2 letras.\n");
             printf("   No se permiten numeros ni caracteres especiales.\n");
             printf("   Nombre introducido: '%s'\n\n", nuevo.nombre);
             continue;
         }
-        printf("[DEBUG] validarNombreApellido retorno TRUE\n");
 
         break;
     } while (1);
@@ -157,16 +144,12 @@ void agregarAlumno() {
     do {
         leerString(nuevo.apellido, sizeof(nuevo.apellido), "Apellido: ");
 
-        printf("[DEBUG] Apellido leido: '%s' (len=%d)\n", nuevo.apellido, (int)strlen(nuevo.apellido));
-
         if (strlen(nuevo.apellido) == 0) {
-            printf("[DEBUG] Apellido vacio detectado\n");
             printf("\nERROR: El apellido no puede estar vacio.\n");
             printf("   Por favor, introduce un apellido valido.\n\n");
             continue;
         }
         if (!validarNombreApellido(nuevo.apellido, 2)) {
-            printf("[DEBUG] validarNombreApellido(apellido) = FALSE\n");
             printf("\nERROR: El apellido debe tener al menos 2 letras.\n");
             printf("   No se permiten numeros ni caracteres especiales.\n");
             printf("   Apellido introducido: '%s'\n\n", nuevo.apellido);
@@ -225,22 +208,17 @@ void agregarAlumno() {
     do {
         leerString(nuevo.telefono, sizeof(nuevo.telefono), "Telefono: ");
 
-        printf("[DEBUG] Telefono leido: '%s' (len=%d)\n", nuevo.telefono, (int)strlen(nuevo.telefono));
-
         if (strlen(nuevo.telefono) == 0) {
-            printf("[DEBUG] Telefono vacio detectado\n");
             printf("\nERROR: El telefono no puede estar vacio.\n\n");
             continue;
         }
         if (!validarCadenaNoVacia(nuevo.telefono, 9)) {
-            printf("[DEBUG] validarCadenaNoVacia(telefono, 9) = FALSE\n");
             printf("\nERROR: El telefono debe tener al menos 9 caracteres.\n");
             printf("   Telefono introducido: '%s' (longitud: %d)\n\n",
                    nuevo.telefono, (int)strlen(nuevo.telefono));
             continue;
         }
         if (!validarTelefono(nuevo.telefono)) {
-            printf("[DEBUG] validarTelefono() = FALSE\n");
             printf("\nERROR: Formato de telefono invalido.\n");
             printf("   Debe contener al menos 9 digitos.\n");
             printf("   Telefono introducido: '%s'\n\n", nuevo.telefono);
@@ -252,15 +230,11 @@ void agregarAlumno() {
     do {
         leerString(nuevo.direccion, sizeof(nuevo.direccion), "Direccion: ");
 
-        printf("[DEBUG] Direccion leida: '%s' (len=%d)\n", nuevo.direccion, (int)strlen(nuevo.direccion));
-
         if (strlen(nuevo.direccion) == 0) {
-            printf("[DEBUG] Direccion vacia detectada\n");
             printf("\nERROR: La direccion no puede estar vacia.\n\n");
             continue;
         }
         if (!validarCadenaNoVacia(nuevo.direccion, 5)) {
-            printf("[DEBUG] validarCadenaNoVacia(direccion, 5) = FALSE\n");
             printf("\nERROR: La direccion debe tener al menos 5 caracteres.\n");
             printf("   Direccion introducida: '%s'\n\n", nuevo.direccion);
             continue;

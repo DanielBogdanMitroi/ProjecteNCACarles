@@ -84,7 +84,7 @@ void agregarHorario(Usuario usuario_actual) {
     }
 
     cargarHorarios(horarios, &total);
-    generarID(nuevo.id, "HOR", total + 1);
+    generarID(nuevo.id, "HOR", obtenerSiguienteNumeroID(ARCHIVO_HORARIOS, "HOR"));
 
     printf("=== AGREGAR HORARIO ===\n");
     printf("ID generado: %s\n", nuevo.id);

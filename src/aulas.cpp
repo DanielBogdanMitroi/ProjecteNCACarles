@@ -79,7 +79,7 @@ void agregarAula(Usuario usuario_actual) {
     }
 
     cargarAulas(aulas, &total);
-    generarID(nueva.id, "AULA", total + 1);
+    generarID(nueva.id, "AULA", obtenerSiguienteNumeroID(ARCHIVO_AULAS, "AULA"));
 
     printf("=== AGREGAR AULA ===\n");
     printf("ID generado: %s\n", nueva.id);
