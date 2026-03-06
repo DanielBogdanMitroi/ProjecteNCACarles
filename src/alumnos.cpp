@@ -114,7 +114,6 @@ void agregarAlumno() {
     Alumno alumnos[MAX_ALUMNOS];
     int total;
     Alumno nuevo;
-    int email_valido, telefono_valido, fecha_valida;
     memset(&nuevo, 0, sizeof(Alumno));
 
     cargarAlumnos(alumnos, &total);
@@ -125,64 +124,117 @@ void agregarAlumno() {
 
     do {
         leerString(nuevo.nombre, sizeof(nuevo.nombre), "Nombre: ");
-        if (!validarCadenaNoVacia(nuevo.nombre, 2)) {
-            printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+        if (strlen(nuevo.nombre) == 0) {
+            printf("\nERROR: El nombre no puede estar vacio.\n");
+            printf("   Por favor, introduce un nombre valido.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.nombre, 2));
+        if (!validarNombreApellido(nuevo.nombre, 2)) {
+            printf("\nERROR: El nombre debe tener al menos 2 letras.\n");
+            printf("   No se permiten numeros ni caracteres especiales.\n");
+            printf("   Nombre introducido: '%s'\n\n", nuevo.nombre);
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerString(nuevo.apellido, sizeof(nuevo.apellido), "Apellido: ");
-        if (!validarCadenaNoVacia(nuevo.apellido, 2)) {
-            printf("Error: El apellido debe tener al menos 2 caracteres.\n");
+        if (strlen(nuevo.apellido) == 0) {
+            printf("\nERROR: El apellido no puede estar vacio.\n");
+            printf("   Por favor, introduce un apellido valido.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.apellido, 2));
+        if (!validarNombreApellido(nuevo.apellido, 2)) {
+            printf("\nERROR: El apellido debe tener al menos 2 letras.\n");
+            printf("   No se permiten numeros ni caracteres especiales.\n");
+            printf("   Apellido introducido: '%s'\n\n", nuevo.apellido);
+            continue;
+        }
+        break;
+    } while (1);
 
-    email_valido = 0;
     do {
         leerString(nuevo.email, sizeof(nuevo.email), "Email: ");
+        if (strlen(nuevo.email) == 0) {
+            printf("\nERROR: El email no puede estar vacio.\n\n");
+            continue;
+        }
         if (!validarCadenaNoVacia(nuevo.email, 5)) {
-            printf("Error: El email no puede estar vacio.\n");
+            printf("\nERROR: El email debe tener al menos 5 caracteres.\n\n");
             continue;
         }
         if (!validarEmail(nuevo.email)) {
-            printf("Error: Formato de email invalido. Formato correcto: usuario@dominio.com\n");
-        } else if (emailYaExiste(nuevo.email, ARCHIVO_ALUMNOS, "")) {
-            printf("Error: Ya existe un alumno con ese email.\n");
-        } else {
-            email_valido = 1;
+            printf("\nERROR: Formato de email invalido.\n");
+            printf("   Formato correcto: usuario@dominio.com\n");
+            printf("   Email introducido: '%s'\n\n", nuevo.email);
+            continue;
         }
-    } while (!email_valido);
+        if (emailYaExiste(nuevo.email, ARCHIVO_ALUMNOS, "")) {
+            printf("\nERROR: Ya existe un alumno con ese email.\n");
+            printf("   Email duplicado: '%s'\n\n", nuevo.email);
+            continue;
+        }
+        break;
+    } while (1);
 
-    fecha_valida = 0;
     do {
         leerString(nuevo.fecha_nacimiento, sizeof(nuevo.fecha_nacimiento), "Fecha nacimiento (YYYY-MM-DD): ");
-        if (!validarFecha(nuevo.fecha_nacimiento)) {
-            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
-        } else {
-            fecha_valida = 1;
+        if (strlen(nuevo.fecha_nacimiento) == 0) {
+            printf("\nERROR: La fecha no puede estar vacia.\n\n");
+            continue;
         }
-    } while (!fecha_valida);
+        if (strlen(nuevo.fecha_nacimiento) != 10) {
+            printf("\nERROR: Formato de fecha invalido.\n");
+            printf("   Formato correcto: YYYY-MM-DD (10 caracteres)\n");
+            printf("   Fecha introducida: '%s' (longitud: %d)\n\n",
+                   nuevo.fecha_nacimiento, (int)strlen(nuevo.fecha_nacimiento));
+            continue;
+        }
+        if (!validarFecha(nuevo.fecha_nacimiento)) {
+            printf("\nERROR: Fecha invalida.\n");
+            printf("   Formato correcto: YYYY-MM-DD\n");
+            printf("   Ejemplo: 2000-05-15\n");
+            printf("   Fecha introducida: '%s'\n\n", nuevo.fecha_nacimiento);
+            continue;
+        }
+        break;
+    } while (1);
 
-    telefono_valido = 0;
     do {
         leerString(nuevo.telefono, sizeof(nuevo.telefono), "Telefono: ");
+        if (strlen(nuevo.telefono) == 0) {
+            printf("\nERROR: El telefono no puede estar vacio.\n\n");
+            continue;
+        }
         if (!validarCadenaNoVacia(nuevo.telefono, 9)) {
-            printf("Error: El telefono debe tener al menos 9 caracteres.\n");
+            printf("\nERROR: El telefono debe tener al menos 9 caracteres.\n");
+            printf("   Telefono introducido: '%s' (longitud: %d)\n\n",
+                   nuevo.telefono, (int)strlen(nuevo.telefono));
             continue;
         }
         if (!validarTelefono(nuevo.telefono)) {
-            printf("Error: Formato de telefono invalido.\n");
-        } else {
-            telefono_valido = 1;
+            printf("\nERROR: Formato de telefono invalido.\n");
+            printf("   Debe contener al menos 9 digitos.\n");
+            printf("   Telefono introducido: '%s'\n\n", nuevo.telefono);
+            continue;
         }
-    } while (!telefono_valido);
+        break;
+    } while (1);
 
     do {
         leerString(nuevo.direccion, sizeof(nuevo.direccion), "Direccion: ");
-        if (!validarCadenaNoVacia(nuevo.direccion, 5)) {
-            printf("Error: La direccion debe tener al menos 5 caracteres.\n");
+        if (strlen(nuevo.direccion) == 0) {
+            printf("\nERROR: La direccion no puede estar vacia.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.direccion, 5));
+        if (!validarCadenaNoVacia(nuevo.direccion, 5)) {
+            printf("\nERROR: La direccion debe tener al menos 5 caracteres.\n");
+            printf("   Direccion introducida: '%s'\n\n", nuevo.direccion);
+            continue;
+        }
+        break;
+    } while (1);
 
     nuevo.activo = 1;
 
