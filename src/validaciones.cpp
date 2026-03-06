@@ -124,13 +124,32 @@ int validarCadenaNoVacia(const char cadena[], int longitud_minima) {
     int len = strlen(cadena);
     int inicio = 0, fin = len - 1;
 
+    if (len == 0) return 0;
+
     while (inicio < len && (cadena[inicio] == ' ' || cadena[inicio] == '\t')) {
         inicio++;
     }
-    while (fin >= 0 && (cadena[fin] == ' ' || cadena[fin] == '\t' || cadena[fin] == '\n')) {
+    while (fin >= 0 && (cadena[fin] == ' ' || cadena[fin] == '\t' || cadena[fin] == '\n' || cadena[fin] == '\r')) {
         fin--;
     }
     return (fin - inicio + 1 >= longitud_minima) ? 1 : 0;
+}
+
+/* Valida que un nombre/apellido contenga solo letras y espacios, min min_letras letras */
+int validarNombreApellido(const char str[], int min_letras) {
+    int i, letras = 0, len = strlen(str);
+
+    if (len == 0) return 0;
+
+    for (i = 0; i < len; i++) {
+        /* isalpha cubre letras ASCII; bytes > 127 cubren letras acentuadas en UTF-8/Latin-1 */
+        if (isalpha((unsigned char)str[i]) || (unsigned char)str[i] > 127) {
+            letras++;
+        } else if (str[i] != ' ' && str[i] != '\'' && str[i] != '-') {
+            return 0;
+        }
+    }
+    return (letras >= min_letras) ? 1 : 0;
 }
 
 /* Verifica si un email ya existe en un archivo (excluyendo el id_actual) */
