@@ -87,7 +87,6 @@ void agregarTrabajo(Usuario usuario_actual) {
     Trabajo trabajos[MAX_TRABAJOS];
     int total;
     Trabajo nuevo;
-    int fecha_valida;
     memset(&nuevo, 0, sizeof(Trabajo));
 
     if (usuario_actual.tipo == 3) {
@@ -104,57 +103,104 @@ void agregarTrabajo(Usuario usuario_actual) {
 
     do {
         leerString(nuevo.id_materia, sizeof(nuevo.id_materia), "ID Materia: ");
+        if (strlen(nuevo.id_materia) == 0) {
+            printf("\nERROR: El ID de materia no puede estar vacio.\n\n");
+            continue;
+        }
         if (!validarCadenaNoVacia(nuevo.id_materia, 2)) {
-            printf("Error: El ID de materia no puede estar vacio.\n");
+            printf("\nERROR: El ID de materia debe tener al menos 2 caracteres.\n\n");
             continue;
         }
         if (!existeIDEnArchivo(ARCHIVO_MATERIAS, nuevo.id_materia)) {
-            printf("Error: No existe una materia con ID %s.\n", nuevo.id_materia);
-        } else {
-            break;
+            printf("\nERROR: No existe una materia con ID %s.\n", nuevo.id_materia);
+            printf("Por favor, verifica el ID e intenta nuevamente.\n\n");
+            continue;
         }
+        break;
     } while (1);
 
     do {
         leerString(nuevo.titulo, sizeof(nuevo.titulo), "Titulo: ");
-        if (!validarCadenaNoVacia(nuevo.titulo, 3)) {
-            printf("Error: El titulo debe tener al menos 3 caracteres.\n");
+        if (strlen(nuevo.titulo) == 0) {
+            printf("\nERROR: El titulo no puede estar vacio.\n");
+            printf("Por favor, introduce un titulo valido.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.titulo, 3));
+        if (!validarCadenaNoVacia(nuevo.titulo, 3)) {
+            printf("\nERROR: El titulo debe tener al menos 3 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nuevo.titulo);
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerString(nuevo.descripcion, sizeof(nuevo.descripcion), "Descripcion: ");
-        if (!validarCadenaNoVacia(nuevo.descripcion, 3)) {
-            printf("Error: La descripcion debe tener al menos 3 caracteres.\n");
+        if (strlen(nuevo.descripcion) == 0) {
+            printf("\nERROR: La descripcion no puede estar vacia.\n");
+            printf("Por favor, introduce una descripcion valida.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.descripcion, 3));
+        if (!validarCadenaNoVacia(nuevo.descripcion, 3)) {
+            printf("\nERROR: La descripcion debe tener al menos 3 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nuevo.descripcion);
+            continue;
+        }
+        break;
+    } while (1);
 
-    fecha_valida = 0;
     do {
         leerString(nuevo.fecha_asignacion, sizeof(nuevo.fecha_asignacion), "Fecha asignacion (YYYY-MM-DD): ");
-        if (!validarFecha(nuevo.fecha_asignacion)) {
-            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
-        } else {
-            fecha_valida = 1;
+        if (strlen(nuevo.fecha_asignacion) == 0) {
+            printf("\nERROR: La fecha de asignacion no puede estar vacia.\n");
+            printf("Por favor, introduce una fecha valida en formato YYYY-MM-DD.\n\n");
+            continue;
         }
-    } while (!fecha_valida);
+        if (strlen(nuevo.fecha_asignacion) != 10) {
+            printf("\nERROR: La fecha debe tener exactamente 10 caracteres (YYYY-MM-DD).\n");
+            printf("Valor introducido: '%s' (longitud: %d)\n\n",
+                   nuevo.fecha_asignacion, (int)strlen(nuevo.fecha_asignacion));
+            continue;
+        }
+        if (!validarFecha(nuevo.fecha_asignacion)) {
+            printf("\nERROR: Fecha invalida o formato incorrecto.\n");
+            printf("Use el formato YYYY-MM-DD (ejemplo: 2026-03-06).\n\n");
+            continue;
+        }
+        break;
+    } while (1);
 
-    fecha_valida = 0;
     do {
         leerString(nuevo.fecha_entrega, sizeof(nuevo.fecha_entrega), "Fecha entrega (YYYY-MM-DD): ");
-        if (!validarFecha(nuevo.fecha_entrega)) {
-            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
-        } else if (!validarRangoFechas(nuevo.fecha_asignacion, nuevo.fecha_entrega)) {
-            printf("Error: La fecha de entrega debe ser posterior a la de asignacion.\n");
-        } else {
-            fecha_valida = 1;
+        if (strlen(nuevo.fecha_entrega) == 0) {
+            printf("\nERROR: La fecha de entrega no puede estar vacia.\n");
+            printf("Por favor, introduce una fecha valida en formato YYYY-MM-DD.\n\n");
+            continue;
         }
-    } while (!fecha_valida);
+        if (strlen(nuevo.fecha_entrega) != 10) {
+            printf("\nERROR: La fecha debe tener exactamente 10 caracteres (YYYY-MM-DD).\n");
+            printf("Valor introducido: '%s' (longitud: %d)\n\n",
+                   nuevo.fecha_entrega, (int)strlen(nuevo.fecha_entrega));
+            continue;
+        }
+        if (!validarFecha(nuevo.fecha_entrega)) {
+            printf("\nERROR: Fecha invalida o formato incorrecto.\n");
+            printf("Use el formato YYYY-MM-DD (ejemplo: 2026-03-06).\n\n");
+            continue;
+        }
+        if (!validarRangoFechas(nuevo.fecha_asignacion, nuevo.fecha_entrega)) {
+            printf("\nERROR: La fecha de entrega debe ser posterior a la de asignacion (%s).\n\n",
+                   nuevo.fecha_asignacion);
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerFloat(&nuevo.puntuacion_maxima, "Puntuacion maxima (1-100): ");
         if (nuevo.puntuacion_maxima < 0.01f || nuevo.puntuacion_maxima > 100.0f) {
-            printf("Error: La puntuacion debe estar entre 0.01 y 100.\n");
+            printf("\nERROR: La puntuacion debe estar entre 0.01 y 100.\n");
+            printf("Por favor, introduce un valor valido.\n\n");
         }
     } while (nuevo.puntuacion_maxima < 0.01f || nuevo.puntuacion_maxima > 100.0f);
 

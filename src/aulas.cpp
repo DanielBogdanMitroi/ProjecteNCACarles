@@ -86,24 +86,41 @@ void agregarAula(Usuario usuario_actual) {
 
     do {
         leerString(nueva.nombre, sizeof(nueva.nombre), "Nombre: ");
-        if (!validarCadenaNoVacia(nueva.nombre, 2)) {
-            printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+        if (strlen(nueva.nombre) == 0) {
+            printf("\nERROR: El nombre no puede estar vacio.\n");
+            printf("Por favor, introduce un nombre valido.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nueva.nombre, 2));
+        if (!validarCadenaNoVacia(nueva.nombre, 2)) {
+            printf("\nERROR: El nombre debe tener al menos 2 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nueva.nombre);
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerEntero(&nueva.capacidad, "Capacidad (1-500): ");
         if (nueva.capacidad < 1 || nueva.capacidad > 500) {
-            printf("Error: La capacidad debe estar entre 1 y 500.\n");
+            printf("\nERROR: La capacidad debe estar entre 1 y 500.\n");
+            printf("Por favor, introduce un valor valido.\n\n");
         }
     } while (nueva.capacidad < 1 || nueva.capacidad > 500);
 
     do {
         leerString(nueva.tipo, sizeof(nueva.tipo), "Tipo (Teoria/Laboratorio): ");
-        if (!validarCadenaNoVacia(nueva.tipo, 2)) {
-            printf("Error: El tipo debe tener al menos 2 caracteres.\n");
+        if (strlen(nueva.tipo) == 0) {
+            printf("\nERROR: El tipo no puede estar vacio.\n");
+            printf("Por favor, introduce un tipo valido.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nueva.tipo, 2));
+        if (!validarCadenaNoVacia(nueva.tipo, 2)) {
+            printf("\nERROR: El tipo debe tener al menos 2 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nueva.tipo);
+            continue;
+        }
+        break;
+    } while (1);
 
     nueva.activo = 1;
 

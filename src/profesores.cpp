@@ -114,7 +114,6 @@ void agregarProfesor() {
     Profesor profesores[MAX_PROFESORES];
     int total;
     Profesor nuevo;
-    int email_valido, telefono_valido;
     memset(&nuevo, 0, sizeof(Profesor));
 
     cargarProfesores(profesores, &total);
@@ -125,54 +124,86 @@ void agregarProfesor() {
 
     do {
         leerString(nuevo.nombre, sizeof(nuevo.nombre), "Nombre: ");
-        if (!validarCadenaNoVacia(nuevo.nombre, 2)) {
-            printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+        if (strlen(nuevo.nombre) == 0) {
+            printf("\nERROR: El nombre no puede estar vacio.\n");
+            printf("Por favor, introduce un nombre valido.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.nombre, 2));
+        if (!validarCadenaNoVacia(nuevo.nombre, 2)) {
+            printf("\nERROR: El nombre debe tener al menos 2 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nuevo.nombre);
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerString(nuevo.apellido, sizeof(nuevo.apellido), "Apellido: ");
-        if (!validarCadenaNoVacia(nuevo.apellido, 2)) {
-            printf("Error: El apellido debe tener al menos 2 caracteres.\n");
+        if (strlen(nuevo.apellido) == 0) {
+            printf("\nERROR: El apellido no puede estar vacio.\n");
+            printf("Por favor, introduce un apellido valido.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.apellido, 2));
+        if (!validarCadenaNoVacia(nuevo.apellido, 2)) {
+            printf("\nERROR: El apellido debe tener al menos 2 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nuevo.apellido);
+            continue;
+        }
+        break;
+    } while (1);
 
-    email_valido = 0;
     do {
         leerString(nuevo.email, sizeof(nuevo.email), "Email: ");
+        if (strlen(nuevo.email) == 0) {
+            printf("\nERROR: El email no puede estar vacio.\n\n");
+            continue;
+        }
         if (!validarCadenaNoVacia(nuevo.email, 5)) {
-            printf("Error: El email no puede estar vacio.\n");
+            printf("\nERROR: El email debe tener al menos 5 caracteres.\n\n");
             continue;
         }
         if (!validarEmail(nuevo.email)) {
-            printf("Error: Formato de email invalido. Formato correcto: usuario@dominio.com\n");
-        } else if (emailYaExiste(nuevo.email, ARCHIVO_PROFESORES, "")) {
-            printf("Error: Ya existe un profesor con ese email.\n");
-        } else {
-            email_valido = 1;
+            printf("\nERROR: Formato de email invalido.\n");
+            printf("Formato correcto: usuario@dominio.com\n");
+            printf("Email introducido: '%s'\n\n", nuevo.email);
+            continue;
         }
-    } while (!email_valido);
+        if (emailYaExiste(nuevo.email, ARCHIVO_PROFESORES, "")) {
+            printf("\nERROR: Ya existe un profesor con ese email.\n");
+            printf("Email duplicado: '%s'\n\n", nuevo.email);
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerString(nuevo.especialidad, sizeof(nuevo.especialidad), "Especialidad: ");
-        if (!validarCadenaNoVacia(nuevo.especialidad, 2)) {
-            printf("Error: La especialidad debe tener al menos 2 caracteres.\n");
+        if (strlen(nuevo.especialidad) == 0) {
+            printf("\nERROR: La especialidad no puede estar vacia.\n");
+            printf("Por favor, introduce una especialidad valida.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.especialidad, 2));
+        if (!validarCadenaNoVacia(nuevo.especialidad, 3)) {
+            printf("\nERROR: La especialidad debe tener al menos 3 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nuevo.especialidad);
+            continue;
+        }
+        break;
+    } while (1);
 
-    telefono_valido = 0;
     do {
         leerString(nuevo.telefono, sizeof(nuevo.telefono), "Telefono: ");
-        if (!validarCadenaNoVacia(nuevo.telefono, 9)) {
-            printf("Error: El telefono debe tener al menos 9 caracteres.\n");
+        if (strlen(nuevo.telefono) == 0) {
+            printf("\nERROR: El telefono no puede estar vacio.\n\n");
             continue;
         }
         if (!validarTelefono(nuevo.telefono)) {
-            printf("Error: Formato de telefono invalido.\n");
-        } else {
-            telefono_valido = 1;
+            printf("\nERROR: El telefono debe contener al menos 9 digitos.\n");
+            printf("Telefono introducido: '%s'\n\n", nuevo.telefono);
+            continue;
         }
-    } while (!telefono_valido);
+        break;
+    } while (1);
 
     nuevo.activo = 1;
 

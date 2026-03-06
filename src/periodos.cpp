@@ -65,7 +65,6 @@ void agregarPeriodo(Usuario usuario_actual) {
     Periodo periodos[MAX_PERIODOS];
     int total;
     Periodo nuevo;
-    int fecha_valida;
     memset(&nuevo, 0, sizeof(Periodo));
 
     if (usuario_actual.tipo != 1) {
@@ -82,32 +81,65 @@ void agregarPeriodo(Usuario usuario_actual) {
 
     do {
         leerString(nuevo.nombre, sizeof(nuevo.nombre), "Nombre: ");
-        if (!validarCadenaNoVacia(nuevo.nombre, 5)) {
-            printf("Error: El nombre debe tener al menos 5 caracteres.\n");
+        if (strlen(nuevo.nombre) == 0) {
+            printf("\nERROR: El nombre no puede estar vacio.\n");
+            printf("Por favor, introduce un nombre valido.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.nombre, 5));
+        if (!validarCadenaNoVacia(nuevo.nombre, 5)) {
+            printf("\nERROR: El nombre debe tener al menos 5 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nuevo.nombre);
+            continue;
+        }
+        break;
+    } while (1);
 
-    fecha_valida = 0;
     do {
         leerString(nuevo.fecha_inicio, sizeof(nuevo.fecha_inicio), "Fecha inicio (YYYY-MM-DD): ");
-        if (!validarFecha(nuevo.fecha_inicio)) {
-            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
-        } else {
-            fecha_valida = 1;
+        if (strlen(nuevo.fecha_inicio) == 0) {
+            printf("\nERROR: La fecha de inicio no puede estar vacia.\n");
+            printf("Por favor, introduce una fecha valida en formato YYYY-MM-DD.\n\n");
+            continue;
         }
-    } while (!fecha_valida);
+        if (strlen(nuevo.fecha_inicio) != 10) {
+            printf("\nERROR: La fecha debe tener exactamente 10 caracteres (YYYY-MM-DD).\n");
+            printf("Valor introducido: '%s' (longitud: %d)\n\n",
+                   nuevo.fecha_inicio, (int)strlen(nuevo.fecha_inicio));
+            continue;
+        }
+        if (!validarFecha(nuevo.fecha_inicio)) {
+            printf("\nERROR: Fecha invalida o formato incorrecto.\n");
+            printf("Use el formato YYYY-MM-DD (ejemplo: 2026-03-06).\n\n");
+            continue;
+        }
+        break;
+    } while (1);
 
-    fecha_valida = 0;
     do {
         leerString(nuevo.fecha_fin, sizeof(nuevo.fecha_fin), "Fecha fin (YYYY-MM-DD): ");
-        if (!validarFecha(nuevo.fecha_fin)) {
-            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
-        } else if (!validarRangoFechas(nuevo.fecha_inicio, nuevo.fecha_fin)) {
-            printf("Error: La fecha de fin debe ser posterior a la de inicio.\n");
-        } else {
-            fecha_valida = 1;
+        if (strlen(nuevo.fecha_fin) == 0) {
+            printf("\nERROR: La fecha de fin no puede estar vacia.\n");
+            printf("Por favor, introduce una fecha valida en formato YYYY-MM-DD.\n\n");
+            continue;
         }
-    } while (!fecha_valida);
+        if (strlen(nuevo.fecha_fin) != 10) {
+            printf("\nERROR: La fecha debe tener exactamente 10 caracteres (YYYY-MM-DD).\n");
+            printf("Valor introducido: '%s' (longitud: %d)\n\n",
+                   nuevo.fecha_fin, (int)strlen(nuevo.fecha_fin));
+            continue;
+        }
+        if (!validarFecha(nuevo.fecha_fin)) {
+            printf("\nERROR: Fecha invalida o formato incorrecto.\n");
+            printf("Use el formato YYYY-MM-DD (ejemplo: 2026-03-06).\n\n");
+            continue;
+        }
+        if (!validarRangoFechas(nuevo.fecha_inicio, nuevo.fecha_fin)) {
+            printf("\nERROR: La fecha de fin debe ser posterior a la de inicio (%s).\n\n",
+                   nuevo.fecha_inicio);
+            continue;
+        }
+        break;
+    } while (1);
 
     nuevo.activo = 1;
 
