@@ -1,2 +1,10 @@
+# Ignore accidental duplicate data folder in bin/
+bin/datos/
+
+# Compiled executables
+bin/escuela
+bin/escuela.exe
+
+# Object files
 obj/
-bin/
+*.o
