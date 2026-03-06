@@ -368,7 +368,9 @@ void registrarEntrega(Usuario usuario_actual) {
     } while (!fecha_valida);
 
     do {
-        leerFloat(&nueva.calificacion, "Calificacion (0-%.2f): ");
+        char prompt[50];
+        snprintf(prompt, sizeof(prompt), "Calificacion (0-%.2f): ", puntuacion_max);
+        leerFloat(&nueva.calificacion, prompt);
         if (!validarPuntuacion(nueva.calificacion, puntuacion_max)) {
             printf("Error: Calificacion invalida (0-%.2f).\n", puntuacion_max);
         }
