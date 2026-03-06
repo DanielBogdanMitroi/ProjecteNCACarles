@@ -98,10 +98,32 @@ void reporteAsistenciaGeneral() {
 
     limpiarPantalla();
     printf("=== REPORTE GENERAL DE ASISTENCIA ===\n\n");
+
+    if (total_asis == 0) {
+        printf("No hay registros de asistencia en el sistema.\n");
+        printf("Use la opcion 'Registrar asistencia' para crear registros.\n");
+        pausar();
+        return;
+    }
+
+    if (total_a == 0) {
+        printf("No hay alumnos registrados en el sistema.\n");
+        pausar();
+        return;
+    }
+
+    if (total_m == 0) {
+        printf("No hay materias registradas en el sistema.\n");
+        pausar();
+        return;
+    }
+
     printf("%-25s %-20s %-8s %-8s %-10s\n",
            "Alumno", "Materia", "Total", "Pres.", "Porcentaje");
     printf("%-25s %-20s %-8s %-8s %-10s\n",
            "------", "-------", "-----", "-----", "----------");
+
+    int registros_mostrados = 0;
 
     for (j = 0; j < total_a; j++) {
         if (!alumnos[j].activo) continue;
@@ -121,9 +143,19 @@ void reporteAsistenciaGeneral() {
                 float pct = (float)pres / tot * 100.0f;
                 printf("%-25s %-20s %-8d %-8d %-9.1f%%\n",
                        nombre_alu, materias[k].nombre, tot, pres, pct);
+                registros_mostrados++;
             }
         }
     }
+
+    if (registros_mostrados == 0) {
+        printf("\nNo hay datos de asistencia para mostrar.\n");
+        printf("Verifique que haya alumnos matriculados y asistencias registradas.\n");
+    } else {
+        printf("\nTotal de combinaciones alumno-materia: %d\n", registros_mostrados);
+        printf("Total de registros de asistencia: %d\n", total_asis);
+    }
+
     pausar();
 }
 
