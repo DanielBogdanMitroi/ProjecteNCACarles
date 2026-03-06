@@ -4,6 +4,7 @@
 #include "asistencias.h"
 #include "archivos.h"
 #include "utilidades.h"
+#include "validaciones.h"
 
 /* Menu principal de gestion de asistencias */
 void menuAsistencias(Usuario usuario_actual) {
@@ -58,16 +59,59 @@ void registrarAsistencia(Usuario usuario_actual) {
 
     printf("=== REGISTRAR ASISTENCIA ===\n");
     printf("ID generado: %s\n", nueva.id);
-    leerString(nueva.id_alumno, sizeof(nueva.id_alumno), "ID Alumno: ");
-    leerString(nueva.id_materia, sizeof(nueva.id_materia), "ID Materia: ");
-    leerString(nueva.fecha, sizeof(nueva.fecha), "Fecha (YYYY-MM-DD): ");
-    leerEntero(&nueva.presente, "Presente (1=Si, 0=No): ");
+
+    /* Validar ID Alumno */
+    do {
+        leerString(nueva.id_alumno, sizeof(nueva.id_alumno), "ID Alumno: ");
+        if (!validarCadenaNoVacia(nueva.id_alumno, 2)) {
+            printf("\nERROR: El ID de alumno no puede estar vacio.\n\n");
+            continue;
+        }
+        if (!existeIDEnArchivo(ARCHIVO_ALUMNOS, nueva.id_alumno)) {
+            printf("\nERROR: No existe un alumno con ID %s.\n\n", nueva.id_alumno);
+            continue;
+        }
+        break;
+    } while (1);
+
+    /* Validar ID Materia */
+    do {
+        leerString(nueva.id_materia, sizeof(nueva.id_materia), "ID Materia: ");
+        if (!validarCadenaNoVacia(nueva.id_materia, 2)) {
+            printf("\nERROR: El ID de materia no puede estar vacio.\n\n");
+            continue;
+        }
+        if (!existeIDEnArchivo(ARCHIVO_MATERIAS, nueva.id_materia)) {
+            printf("\nERROR: No existe una materia con ID %s.\n\n", nueva.id_materia);
+            continue;
+        }
+        break;
+    } while (1);
+
+    /* Validar Fecha */
+    do {
+        leerString(nueva.fecha, sizeof(nueva.fecha), "Fecha (YYYY-MM-DD): ");
+        if (!validarFecha(nueva.fecha)) {
+            printf("\nERROR: Fecha invalida. Use formato YYYY-MM-DD.\n\n");
+            continue;
+        }
+        break;
+    } while (1);
+
+    /* Validar Presente */
+    do {
+        leerEntero(&nueva.presente, "Presente (1=Si, 0=No): ");
+        if (nueva.presente != 0 && nueva.presente != 1) {
+            printf("\nERROR: Debe ingresar 1 (presente) o 0 (ausente).\n\n");
+        }
+    } while (nueva.presente != 0 && nueva.presente != 1);
+
     leerString(nueva.observaciones, sizeof(nueva.observaciones), "Observaciones (Enter para ninguna): ");
 
     asistencias[total] = nueva;
     total++;
     guardarAsistencias(asistencias, total);
-    printf("Asistencia %s registrada exitosamente.\n", nueva.id);
+    printf("\nAsistencia %s registrada exitosamente.\n", nueva.id);
     pausar();
 }
 
