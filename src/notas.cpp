@@ -86,7 +86,6 @@ void agregarNota(Usuario usuario_actual) {
     Nota notas[MAX_NOTAS];
     int total;
     Nota nueva;
-    int fecha_valida;
     memset(&nueva, 0, sizeof(Nota));
 
     if (usuario_actual.tipo == 3) {
@@ -103,67 +102,112 @@ void agregarNota(Usuario usuario_actual) {
 
     do {
         leerString(nueva.id_alumno, sizeof(nueva.id_alumno), "ID Alumno: ");
+        if (strlen(nueva.id_alumno) == 0) {
+            printf("\nERROR: El ID de alumno no puede estar vacio.\n\n");
+            continue;
+        }
         if (!validarCadenaNoVacia(nueva.id_alumno, 2)) {
-            printf("Error: El ID de alumno no puede estar vacio.\n");
+            printf("\nERROR: El ID de alumno debe tener al menos 2 caracteres.\n\n");
             continue;
         }
         if (!existeIDEnArchivo(ARCHIVO_ALUMNOS, nueva.id_alumno)) {
-            printf("Error: No existe un alumno con ID %s.\n", nueva.id_alumno);
-        } else {
-            break;
+            printf("\nERROR: No existe un alumno con ID %s.\n", nueva.id_alumno);
+            printf("Por favor, verifica el ID e intenta nuevamente.\n\n");
+            continue;
         }
+        break;
     } while (1);
 
     do {
         leerString(nueva.id_materia, sizeof(nueva.id_materia), "ID Materia: ");
+        if (strlen(nueva.id_materia) == 0) {
+            printf("\nERROR: El ID de materia no puede estar vacio.\n\n");
+            continue;
+        }
         if (!validarCadenaNoVacia(nueva.id_materia, 2)) {
-            printf("Error: El ID de materia no puede estar vacio.\n");
+            printf("\nERROR: El ID de materia debe tener al menos 2 caracteres.\n\n");
             continue;
         }
         if (!existeIDEnArchivo(ARCHIVO_MATERIAS, nueva.id_materia)) {
-            printf("Error: No existe una materia con ID %s.\n", nueva.id_materia);
-        } else {
-            break;
+            printf("\nERROR: No existe una materia con ID %s.\n", nueva.id_materia);
+            printf("Por favor, verifica el ID e intenta nuevamente.\n\n");
+            continue;
         }
+        break;
     } while (1);
 
     do {
         leerFloat(&nueva.calificacion, "Calificacion (0-10): ");
         if (!validarNota(nueva.calificacion)) {
-            printf("Error: Calificacion invalida (0-10).\n");
+            printf("\nERROR: Calificacion invalida. Debe estar entre 0 y 10.\n\n");
         }
     } while (!validarNota(nueva.calificacion));
 
     do {
         leerString(nueva.tipo, sizeof(nueva.tipo), "Tipo (Examen/Trabajo/Practica): ");
-        if (!validarCadenaNoVacia(nueva.tipo, 3)) {
-            printf("Error: El tipo debe tener al menos 3 caracteres.\n");
+        if (strlen(nueva.tipo) == 0) {
+            printf("\nERROR: El tipo no puede estar vacio.\n");
+            printf("Por favor, introduce un tipo valido.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nueva.tipo, 3));
+        if (!validarCadenaNoVacia(nueva.tipo, 3)) {
+            printf("\nERROR: El tipo debe tener al menos 3 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nueva.tipo);
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerString(nueva.descripcion, sizeof(nueva.descripcion), "Descripcion: ");
-        if (!validarCadenaNoVacia(nueva.descripcion, 3)) {
-            printf("Error: La descripcion debe tener al menos 3 caracteres.\n");
+        if (strlen(nueva.descripcion) == 0) {
+            printf("\nERROR: La descripcion no puede estar vacia.\n");
+            printf("Por favor, introduce una descripcion valida.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nueva.descripcion, 3));
+        if (!validarCadenaNoVacia(nueva.descripcion, 3)) {
+            printf("\nERROR: La descripcion debe tener al menos 3 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nueva.descripcion);
+            continue;
+        }
+        break;
+    } while (1);
 
-    fecha_valida = 0;
     do {
         leerString(nueva.fecha, sizeof(nueva.fecha), "Fecha (YYYY-MM-DD): ");
-        if (!validarFecha(nueva.fecha)) {
-            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
-        } else {
-            fecha_valida = 1;
+        if (strlen(nueva.fecha) == 0) {
+            printf("\nERROR: La fecha no puede estar vacia.\n");
+            printf("Por favor, introduce una fecha valida en formato YYYY-MM-DD.\n\n");
+            continue;
         }
-    } while (!fecha_valida);
+        if (strlen(nueva.fecha) != 10) {
+            printf("\nERROR: La fecha debe tener exactamente 10 caracteres (YYYY-MM-DD).\n");
+            printf("Valor introducido: '%s' (longitud: %d)\n\n",
+                   nueva.fecha, (int)strlen(nueva.fecha));
+            continue;
+        }
+        if (!validarFecha(nueva.fecha)) {
+            printf("\nERROR: Fecha invalida o formato incorrecto.\n");
+            printf("Use el formato YYYY-MM-DD (ejemplo: 2026-03-06).\n\n");
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerString(nueva.periodo, sizeof(nueva.periodo), "Periodo: ");
-        if (!validarCadenaNoVacia(nueva.periodo, 2)) {
-            printf("Error: El periodo debe tener al menos 2 caracteres.\n");
+        if (strlen(nueva.periodo) == 0) {
+            printf("\nERROR: El periodo no puede estar vacio.\n");
+            printf("Por favor, introduce un periodo valido.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nueva.periodo, 2));
+        if (!validarCadenaNoVacia(nueva.periodo, 2)) {
+            printf("\nERROR: El periodo debe tener al menos 2 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nueva.periodo);
+            continue;
+        }
+        break;
+    } while (1);
 
     notas[total] = nueva;
     total++;

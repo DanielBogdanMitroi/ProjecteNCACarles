@@ -91,61 +91,98 @@ void agregarHorario(Usuario usuario_actual) {
 
     do {
         leerString(nuevo.id_materia, sizeof(nuevo.id_materia), "ID Materia: ");
+        if (strlen(nuevo.id_materia) == 0) {
+            printf("\nERROR: El ID de materia no puede estar vacio.\n\n");
+            continue;
+        }
         if (!validarCadenaNoVacia(nuevo.id_materia, 2)) {
-            printf("Error: El ID de materia no puede estar vacio.\n");
+            printf("\nERROR: El ID de materia debe tener al menos 2 caracteres.\n\n");
             continue;
         }
         if (!existeIDEnArchivo(ARCHIVO_MATERIAS, nuevo.id_materia)) {
-            printf("Error: No existe una materia con ID %s.\n", nuevo.id_materia);
-        } else {
-            break;
+            printf("\nERROR: No existe una materia con ID %s.\n", nuevo.id_materia);
+            printf("Por favor, verifica el ID e intenta nuevamente.\n\n");
+            continue;
         }
+        break;
     } while (1);
 
     do {
         leerString(nuevo.id_aula, sizeof(nuevo.id_aula), "ID Aula: ");
+        if (strlen(nuevo.id_aula) == 0) {
+            printf("\nERROR: El ID de aula no puede estar vacio.\n\n");
+            continue;
+        }
         if (!validarCadenaNoVacia(nuevo.id_aula, 2)) {
-            printf("Error: El ID de aula no puede estar vacio.\n");
+            printf("\nERROR: El ID de aula debe tener al menos 2 caracteres.\n\n");
             continue;
         }
         if (!existeIDEnArchivo(ARCHIVO_AULAS, nuevo.id_aula)) {
-            printf("Error: No existe un aula con ID %s.\n", nuevo.id_aula);
-        } else {
-            break;
+            printf("\nERROR: No existe un aula con ID %s.\n", nuevo.id_aula);
+            printf("Por favor, verifica el ID e intenta nuevamente.\n\n");
+            continue;
         }
+        break;
     } while (1);
 
     do {
         leerString(nuevo.dia_semana, sizeof(nuevo.dia_semana), "Dia semana (Lunes/Martes/Miercoles/Jueves/Viernes/Sabado/Domingo): ");
-        if (!validarDiaSemana(nuevo.dia_semana)) {
-            printf("Error: Dia invalido. Use: Lunes, Martes, Miercoles, Jueves, Viernes, Sabado, Domingo.\n");
+        if (strlen(nuevo.dia_semana) == 0) {
+            printf("\nERROR: El dia de la semana no puede estar vacio.\n\n");
+            continue;
         }
-    } while (!validarDiaSemana(nuevo.dia_semana));
+        if (!validarDiaSemana(nuevo.dia_semana)) {
+            printf("\nERROR: Dia invalido.\n");
+            printf("Use: Lunes, Martes, Miercoles, Jueves, Viernes, Sabado, Domingo.\n\n");
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerString(nuevo.hora_inicio, sizeof(nuevo.hora_inicio), "Hora inicio (HH:MM): ");
-        if (!validarHora(nuevo.hora_inicio)) {
-            printf("Error: Hora de inicio invalida. Formato: HH:MM\n");
+        if (strlen(nuevo.hora_inicio) == 0) {
+            printf("\nERROR: La hora de inicio no puede estar vacia.\n\n");
+            continue;
         }
-    } while (!validarHora(nuevo.hora_inicio));
+        if (!validarHora(nuevo.hora_inicio)) {
+            printf("\nERROR: Hora de inicio invalida. Formato: HH:MM\n\n");
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerString(nuevo.hora_fin, sizeof(nuevo.hora_fin), "Hora fin (HH:MM): ");
-        if (!validarHora(nuevo.hora_fin)) {
-            printf("Error: Hora de fin invalida. Formato: HH:MM\n");
-        } else if (!validarHoraRango(nuevo.hora_inicio, nuevo.hora_fin)) {
-            printf("Error: La hora de fin debe ser posterior a la hora de inicio (%s).\n", nuevo.hora_inicio);
-        } else {
-            break;
+        if (strlen(nuevo.hora_fin) == 0) {
+            printf("\nERROR: La hora de fin no puede estar vacia.\n\n");
+            continue;
         }
+        if (!validarHora(nuevo.hora_fin)) {
+            printf("\nERROR: Hora de fin invalida. Formato: HH:MM\n\n");
+            continue;
+        }
+        if (!validarHoraRango(nuevo.hora_inicio, nuevo.hora_fin)) {
+            printf("\nERROR: La hora de fin debe ser posterior a la hora de inicio (%s).\n\n",
+                   nuevo.hora_inicio);
+            continue;
+        }
+        break;
     } while (1);
 
     do {
         leerString(nuevo.periodo, sizeof(nuevo.periodo), "Periodo: ");
-        if (!validarCadenaNoVacia(nuevo.periodo, 2)) {
-            printf("Error: El periodo no puede estar vacio.\n");
+        if (strlen(nuevo.periodo) == 0) {
+            printf("\nERROR: El periodo no puede estar vacio.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.periodo, 2));
+        if (!validarCadenaNoVacia(nuevo.periodo, 2)) {
+            printf("\nERROR: El periodo debe tener al menos 2 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nuevo.periodo);
+            continue;
+        }
+        break;
+    } while (1);
 
     horarios[total] = nuevo;
     total++;

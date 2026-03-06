@@ -123,17 +123,33 @@ void agregarMateria() {
 
     do {
         leerString(nueva.nombre, sizeof(nueva.nombre), "Nombre: ");
-        if (!validarCadenaNoVacia(nueva.nombre, 2)) {
-            printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+        if (strlen(nueva.nombre) == 0) {
+            printf("\nERROR: El nombre no puede estar vacio.\n");
+            printf("Por favor, introduce un nombre valido.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nueva.nombre, 2));
+        if (!validarCadenaNoVacia(nueva.nombre, 2)) {
+            printf("\nERROR: El nombre debe tener al menos 2 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nueva.nombre);
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerString(nueva.descripcion, sizeof(nueva.descripcion), "Descripcion: ");
-        if (!validarCadenaNoVacia(nueva.descripcion, 3)) {
-            printf("Error: La descripcion debe tener al menos 3 caracteres.\n");
+        if (strlen(nueva.descripcion) == 0) {
+            printf("\nERROR: La descripcion no puede estar vacia.\n");
+            printf("Por favor, introduce una descripcion valida.\n\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nueva.descripcion, 3));
+        if (!validarCadenaNoVacia(nueva.descripcion, 3)) {
+            printf("\nERROR: La descripcion debe tener al menos 3 caracteres.\n");
+            printf("Valor introducido: '%s'\n\n", nueva.descripcion);
+            continue;
+        }
+        break;
+    } while (1);
 
     do {
         leerEntero(&nueva.creditos, "Creditos: ");
