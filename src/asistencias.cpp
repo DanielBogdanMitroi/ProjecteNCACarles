@@ -54,7 +54,7 @@ void registrarAsistencia(Usuario usuario_actual) {
     }
 
     cargarAsistencias(asistencias, &total);
-    generarID(nueva.id, "ASIS", total + 1);
+    generarID(nueva.id, "ASIS", obtenerSiguienteNumeroID(ARCHIVO_ASISTENCIAS, "ASIS"));
 
     printf("=== REGISTRAR ASISTENCIA ===\n");
     printf("ID generado: %s\n", nueva.id);

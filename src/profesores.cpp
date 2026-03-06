@@ -117,7 +117,7 @@ void agregarProfesor() {
     memset(&nuevo, 0, sizeof(Profesor));
 
     cargarProfesores(profesores, &total);
-    generarID(nuevo.id, "PROF", total + 1);
+    generarID(nuevo.id, "PROF", obtenerSiguienteNumeroID(ARCHIVO_PROFESORES, "PROF"));
 
     printf("=== AGREGAR PROFESOR ===\n");
     printf("ID generado: %s\n", nuevo.id);

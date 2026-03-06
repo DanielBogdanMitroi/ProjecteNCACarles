@@ -116,7 +116,7 @@ void agregarMateria() {
     memset(&nueva, 0, sizeof(Materia));
 
     cargarMaterias(materias, &total);
-    generarID(nueva.id, "MAT", total + 1);
+    generarID(nueva.id, "MAT", obtenerSiguienteNumeroID(ARCHIVO_MATERIAS, "MAT"));
 
     printf("=== AGREGAR MATERIA ===\n");
     printf("ID generado: %s\n", nueva.id);

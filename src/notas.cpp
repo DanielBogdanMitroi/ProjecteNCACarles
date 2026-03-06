@@ -95,7 +95,7 @@ void agregarNota(Usuario usuario_actual) {
     }
 
     cargarNotas(notas, &total);
-    generarID(nueva.id, "NOTA", total + 1);
+    generarID(nueva.id, "NOTA", obtenerSiguienteNumeroID(ARCHIVO_NOTAS, "NOTA"));
 
     printf("=== AGREGAR NOTA ===\n");
     printf("ID generado: %s\n", nueva.id);

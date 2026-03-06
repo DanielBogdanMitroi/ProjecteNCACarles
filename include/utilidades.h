@@ -7,6 +7,7 @@ void leerFloat(float *destino, const char mensaje[]);
 void limpiarPantalla();
 void pausar();
 void generarID(char resultado[], const char prefijo[], int numero);
+int obtenerSiguienteNumeroID(const char archivo[], const char prefijo[]);
 void convertirAMayusculas(char str[]);
 void convertirAMinusculas(char str[]);
 int compararStrings(const char str1[], const char str2[]);
