@@ -181,6 +181,14 @@ void reporteAsistencias() {
     cargarAsistencias(asistencias, &total);
     limpiarPantalla();
     printf("=== REPORTE GENERAL DE ASISTENCIAS ===\n\n");
+
+    if (total == 0) {
+        printf("No hay registros de asistencia en el sistema.\n");
+        printf("Use la opcion 'Registrar asistencia' para crear registros.\n");
+        pausar();
+        return;
+    }
+
     /* Contar por alumno */
     char alumnos_vistos[MAX_ASISTENCIAS][20];
     int n_vistos = 0;
@@ -194,7 +202,12 @@ void reporteAsistencias() {
             }
         }
         if (!ya_visto) {
-            strcpy(alumnos_vistos[n_vistos++], asistencias[i].id_alumno);
+            if (n_vistos < MAX_ASISTENCIAS) {
+                strcpy(alumnos_vistos[n_vistos++], asistencias[i].id_alumno);
+            } else {
+                printf("ADVERTENCIA: Demasiados alumnos unicos, mostrando solo los primeros %d.\n", MAX_ASISTENCIAS);
+                break;
+            }
         }
     }
     printf("%-10s %-10s %-10s %-10s %-10s\n",
@@ -216,7 +229,12 @@ void reporteAsistencias() {
                 }
             }
             if (!ya_mat) {
-                strcpy(materias_vistas[n_mat++], asistencias[i].id_materia);
+                if (n_mat < MAX_ASISTENCIAS) {
+                    strcpy(materias_vistas[n_mat++], asistencias[i].id_materia);
+                } else {
+                    printf("ADVERTENCIA: Demasiadas materias unicas para el alumno %s, mostrando solo las primeras %d.\n", alumnos_vistos[k], MAX_ASISTENCIAS);
+                    break;
+                }
             }
         }
         for (m = 0; m < n_mat; m++) {
@@ -233,5 +251,6 @@ void reporteAsistencias() {
                    alumnos_vistos[k], materias_vistas[m], tot, pres, pct);
         }
     }
+    printf("\nTotal de alumnos: %d | Total de registros: %d\n", n_vistos, total);
     pausar();
 }
