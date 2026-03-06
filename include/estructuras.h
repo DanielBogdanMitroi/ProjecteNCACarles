@@ -15,19 +15,25 @@
 #define MAX_USUARIOS 200
 #define MAX_PROFESOR_MATERIA 1000
 
-#define ARCHIVO_ALUMNOS "datos/alumnos.txt"
-#define ARCHIVO_PROFESORES "datos/profesores.txt"
-#define ARCHIVO_MATERIAS "datos/materias.txt"
-#define ARCHIVO_NOTAS "datos/notas.txt"
-#define ARCHIVO_TRABAJOS "datos/trabajos.txt"
-#define ARCHIVO_ENTREGAS "datos/entregas.txt"
-#define ARCHIVO_ASISTENCIAS "datos/asistencias.txt"
-#define ARCHIVO_HORARIOS "datos/horarios.txt"
-#define ARCHIVO_AULAS "datos/aulas.txt"
-#define ARCHIVO_PERIODOS "datos/periodos.txt"
-#define ARCHIVO_MATRICULAS "datos/matriculas.txt"
-#define ARCHIVO_PROF_MATERIA "datos/profesor_materia.txt"
-#define ARCHIVO_USUARIOS "datos/usuarios.txt"
+#ifdef _WIN32
+    #define DATA_DIR "..\\datos\\"
+#else
+    #define DATA_DIR "../datos/"
+#endif
+
+#define ARCHIVO_ALUMNOS DATA_DIR "alumnos.txt"
+#define ARCHIVO_PROFESORES DATA_DIR "profesores.txt"
+#define ARCHIVO_MATERIAS DATA_DIR "materias.txt"
+#define ARCHIVO_NOTAS DATA_DIR "notas.txt"
+#define ARCHIVO_TRABAJOS DATA_DIR "trabajos.txt"
+#define ARCHIVO_ENTREGAS DATA_DIR "entregas.txt"
+#define ARCHIVO_ASISTENCIAS DATA_DIR "asistencias.txt"
+#define ARCHIVO_HORARIOS DATA_DIR "horarios.txt"
+#define ARCHIVO_AULAS DATA_DIR "aulas.txt"
+#define ARCHIVO_PERIODOS DATA_DIR "periodos.txt"
+#define ARCHIVO_MATRICULAS DATA_DIR "matriculas.txt"
+#define ARCHIVO_PROF_MATERIA DATA_DIR "profesor_materia.txt"
+#define ARCHIVO_USUARIOS DATA_DIR "usuarios.txt"
 
 struct Usuario {
     char username[50];

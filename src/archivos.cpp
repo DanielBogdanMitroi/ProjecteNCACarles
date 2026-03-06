@@ -41,11 +41,11 @@ int existeIDEnArchivo(const char archivo[], const char id[]) {
 /* Crea los archivos de datos iniciales si no existen */
 void crearArchivosIniciales() {
     FILE *f;
-    /* Crear directorio datos si no existe */
+    /* Crear directorio datos en la raíz del proyecto si no existe */
 #ifdef _WIN32
-    _mkdir("datos");
+    _mkdir("..\\datos");
 #else
-    mkdir("datos", 0755);
+    mkdir("../datos", 0755);
 #endif
 
     /* Crear archivo de usuarios si no existe */
