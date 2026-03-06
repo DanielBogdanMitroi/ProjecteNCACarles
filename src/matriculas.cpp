@@ -74,7 +74,7 @@ void agregarMatricula(Usuario usuario_actual) {
     }
 
     cargarMatriculas(matriculas, &total);
-    generarID(nueva.id, "MATRI", total + 1);
+    generarID(nueva.id, "MATRI", obtenerSiguienteNumeroID(ARCHIVO_MATRICULAS, "MATRI"));
 
     printf("=== AGREGAR MATRICULA ===\n");
     printf("ID generado: %s\n", nueva.id);
@@ -170,7 +170,7 @@ void asignarProfesorMateria(Usuario usuario_actual) {
     }
 
     cargarProfesorMaterias(pm, &total);
-    generarID(nuevo.id, "PM", total + 1);
+    generarID(nuevo.id, "PM", obtenerSiguienteNumeroID(ARCHIVO_PROF_MATERIA, "PM"));
 
     printf("=== ASIGNAR PROFESOR A MATERIA ===\n");
     printf("ID generado: %s\n", nuevo.id);
