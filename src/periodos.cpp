@@ -65,6 +65,7 @@ void agregarPeriodo(Usuario usuario_actual) {
     Periodo periodos[MAX_PERIODOS];
     int total;
     Periodo nuevo;
+    int fecha_valida;
     memset(&nuevo, 0, sizeof(Periodo));
 
     if (usuario_actual.tipo != 1) {
@@ -78,19 +79,36 @@ void agregarPeriodo(Usuario usuario_actual) {
 
     printf("=== AGREGAR PERIODO ===\n");
     printf("ID generado: %s\n", nuevo.id);
-    leerString(nuevo.nombre, sizeof(nuevo.nombre), "Nombre: ");
-    leerString(nuevo.fecha_inicio, sizeof(nuevo.fecha_inicio), "Fecha inicio (YYYY-MM-DD): ");
-    if (!validarFecha(nuevo.fecha_inicio)) {
-        printf("Fecha de inicio invalida.\n");
-        pausar();
-        return;
-    }
-    leerString(nuevo.fecha_fin, sizeof(nuevo.fecha_fin), "Fecha fin (YYYY-MM-DD): ");
-    if (!validarFecha(nuevo.fecha_fin)) {
-        printf("Fecha de fin invalida.\n");
-        pausar();
-        return;
-    }
+
+    do {
+        leerString(nuevo.nombre, sizeof(nuevo.nombre), "Nombre: ");
+        if (!validarCadenaNoVacia(nuevo.nombre, 5)) {
+            printf("Error: El nombre debe tener al menos 5 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nuevo.nombre, 5));
+
+    fecha_valida = 0;
+    do {
+        leerString(nuevo.fecha_inicio, sizeof(nuevo.fecha_inicio), "Fecha inicio (YYYY-MM-DD): ");
+        if (!validarFecha(nuevo.fecha_inicio)) {
+            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
+        } else {
+            fecha_valida = 1;
+        }
+    } while (!fecha_valida);
+
+    fecha_valida = 0;
+    do {
+        leerString(nuevo.fecha_fin, sizeof(nuevo.fecha_fin), "Fecha fin (YYYY-MM-DD): ");
+        if (!validarFecha(nuevo.fecha_fin)) {
+            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
+        } else if (!validarRangoFechas(nuevo.fecha_inicio, nuevo.fecha_fin)) {
+            printf("Error: La fecha de fin debe ser posterior a la de inicio.\n");
+        } else {
+            fecha_valida = 1;
+        }
+    } while (!fecha_valida);
+
     nuevo.activo = 1;
 
     periodos[total] = nuevo;
@@ -105,6 +123,8 @@ void editarPeriodo(Usuario usuario_actual) {
     Periodo periodos[MAX_PERIODOS];
     int total, i;
     char id_buscar[20];
+    char temp[50];
+    int fecha_valida;
 
     if (usuario_actual.tipo != 1) {
         printf("Sin permisos para editar periodos.\n");
@@ -113,15 +133,59 @@ void editarPeriodo(Usuario usuario_actual) {
     }
 
     cargarPeriodos(periodos, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID del periodo a editar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID del periodo a editar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(periodos[i].id, id_buscar) == 0) {
             printf("=== EDITAR PERIODO %s ===\n", periodos[i].id);
-            leerString(periodos[i].nombre, sizeof(periodos[i].nombre), "Nombre: ");
-            leerString(periodos[i].fecha_inicio, sizeof(periodos[i].fecha_inicio), "Fecha inicio (YYYY-MM-DD): ");
-            leerString(periodos[i].fecha_fin, sizeof(periodos[i].fecha_fin), "Fecha fin (YYYY-MM-DD): ");
-            leerEntero(&periodos[i].activo, "Activo (1=Si, 0=No): ");
+            printf("(Presione Enter para mantener el valor actual)\n\n");
+
+            mostrarValorActual("Nombre actual", periodos[i].nombre);
+            do {
+                leerString(temp, sizeof(temp), "Nuevo nombre: ");
+                if (strlen(temp) == 0) break;
+                if (!validarCadenaNoVacia(temp, 5)) {
+                    printf("Error: El nombre debe tener al menos 5 caracteres.\n");
+                } else {
+                    strcpy(periodos[i].nombre, temp);
+                    break;
+                }
+            } while (1);
+
+            mostrarValorActual("Fecha inicio actual", periodos[i].fecha_inicio);
+            fecha_valida = 0;
+            do {
+                leerString(temp, sizeof(temp), "Nueva fecha inicio (YYYY-MM-DD): ");
+                if (strlen(temp) == 0) { fecha_valida = 1; break; }
+                if (!validarFecha(temp)) {
+                    printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
+                } else {
+                    strcpy(periodos[i].fecha_inicio, temp);
+                    fecha_valida = 1;
+                }
+            } while (!fecha_valida);
+
+            mostrarValorActual("Fecha fin actual", periodos[i].fecha_fin);
+            fecha_valida = 0;
+            do {
+                leerString(temp, sizeof(temp), "Nueva fecha fin (YYYY-MM-DD): ");
+                if (strlen(temp) == 0) { fecha_valida = 1; break; }
+                if (!validarFecha(temp)) {
+                    printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
+                } else if (!validarRangoFechas(periodos[i].fecha_inicio, temp)) {
+                    printf("Error: La fecha de fin debe ser posterior a la de inicio (%s).\n",
+                           periodos[i].fecha_inicio);
+                } else {
+                    strcpy(periodos[i].fecha_fin, temp);
+                    fecha_valida = 1;
+                }
+            } while (!fecha_valida);
+
             guardarPeriodos(periodos, total);
             printf("Periodo actualizado.\n");
             pausar();
@@ -137,7 +201,6 @@ void eliminarPeriodo(Usuario usuario_actual) {
     Periodo periodos[MAX_PERIODOS];
     int total, i;
     char id_buscar[20];
-    char confirmacion[5];
 
     if (usuario_actual.tipo != 1) {
         printf("Sin permisos para eliminar periodos.\n");
@@ -146,13 +209,18 @@ void eliminarPeriodo(Usuario usuario_actual) {
     }
 
     cargarPeriodos(periodos, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID del periodo a eliminar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID del periodo a eliminar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(periodos[i].id, id_buscar) == 0) {
-            printf("Desea eliminar el periodo %s? (s/n): ", periodos[i].nombre);
-            leerString(confirmacion, sizeof(confirmacion), "");
-            if (confirmacion[0] == 's' || confirmacion[0] == 'S') {
+            char msg[100];
+            sprintf(msg, "Desea eliminar el periodo %s? (s/n): ", periodos[i].nombre);
+            if (solicitarConfirmacion(msg)) {
                 periodos[i].activo = 0;
                 guardarPeriodos(periodos, total);
                 printf("Periodo desactivado.\n");

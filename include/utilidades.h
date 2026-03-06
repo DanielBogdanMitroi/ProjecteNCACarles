@@ -10,4 +10,8 @@ void generarID(char resultado[], const char prefijo[], int numero);
 void convertirAMayusculas(char str[]);
 void convertirAMinusculas(char str[]);
 int compararStrings(const char str1[], const char str2[]);
+void mostrarValorActual(const char campo[], const char valor[]);
+void mostrarValorActualEntero(const char campo[], int valor);
+void mostrarValorActualFloat(const char campo[], float valor);
+int solicitarConfirmacion(const char mensaje[]);
 #endif

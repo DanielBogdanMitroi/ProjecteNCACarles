@@ -30,7 +30,12 @@ void menuTrabajos(Usuario usuario_actual) {
             case 5: registrarEntrega(usuario_actual); break;
             case 6: {
                 char id[20];
-                leerString(id, sizeof(id), "ID del alumno: ");
+                do {
+                    leerString(id, sizeof(id), "ID del alumno: ");
+                    if (!validarCadenaNoVacia(id, 1)) {
+                        printf("Error: El ID no puede estar vacio.\n");
+                    }
+                } while (!validarCadenaNoVacia(id, 1));
                 verEntregasAlumno(id);
                 break;
             }
@@ -101,8 +106,14 @@ void agregarTrabajo(Usuario usuario_actual) {
         leerString(nuevo.id_materia, sizeof(nuevo.id_materia), "ID Materia: ");
         if (!validarCadenaNoVacia(nuevo.id_materia, 2)) {
             printf("Error: El ID de materia no puede estar vacio.\n");
+            continue;
         }
-    } while (!validarCadenaNoVacia(nuevo.id_materia, 2));
+        if (!existeIDEnArchivo(ARCHIVO_MATERIAS, nuevo.id_materia)) {
+            printf("Error: No existe una materia con ID %s.\n", nuevo.id_materia);
+        } else {
+            break;
+        }
+    } while (1);
 
     do {
         leerString(nuevo.titulo, sizeof(nuevo.titulo), "Titulo: ");
@@ -133,12 +144,20 @@ void agregarTrabajo(Usuario usuario_actual) {
         leerString(nuevo.fecha_entrega, sizeof(nuevo.fecha_entrega), "Fecha entrega (YYYY-MM-DD): ");
         if (!validarFecha(nuevo.fecha_entrega)) {
             printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
+        } else if (!validarRangoFechas(nuevo.fecha_asignacion, nuevo.fecha_entrega)) {
+            printf("Error: La fecha de entrega debe ser posterior a la de asignacion.\n");
         } else {
             fecha_valida = 1;
         }
     } while (!fecha_valida);
 
-    leerFloat(&nuevo.puntuacion_maxima, "Puntuacion maxima: ");
+    do {
+        leerFloat(&nuevo.puntuacion_maxima, "Puntuacion maxima (1-100): ");
+        if (nuevo.puntuacion_maxima < 0.01f || nuevo.puntuacion_maxima > 100.0f) {
+            printf("Error: La puntuacion debe estar entre 0.01 y 100.\n");
+        }
+    } while (nuevo.puntuacion_maxima < 0.01f || nuevo.puntuacion_maxima > 100.0f);
+
     nuevo.activo = 1;
 
     trabajos[total] = nuevo;
@@ -153,6 +172,8 @@ void editarTrabajo(Usuario usuario_actual) {
     Trabajo trabajos[MAX_TRABAJOS];
     int total, i;
     char id_buscar[20];
+    char temp[300];
+    int fecha_valida;
 
     if (usuario_actual.tipo == 3) {
         printf("Sin permisos para editar trabajos.\n");
@@ -161,15 +182,75 @@ void editarTrabajo(Usuario usuario_actual) {
     }
 
     cargarTrabajos(trabajos, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID del trabajo a editar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID del trabajo a editar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(trabajos[i].id, id_buscar) == 0) {
             printf("=== EDITAR TRABAJO %s ===\n", trabajos[i].id);
-            leerString(trabajos[i].titulo, sizeof(trabajos[i].titulo), "Titulo: ");
-            leerString(trabajos[i].descripcion, sizeof(trabajos[i].descripcion), "Descripcion: ");
-            leerString(trabajos[i].fecha_entrega, sizeof(trabajos[i].fecha_entrega), "Fecha entrega (YYYY-MM-DD): ");
-            leerFloat(&trabajos[i].puntuacion_maxima, "Puntuacion maxima: ");
+            printf("(Presione Enter para mantener el valor actual)\n\n");
+
+            mostrarValorActual("Titulo actual", trabajos[i].titulo);
+            do {
+                leerString(temp, sizeof(temp), "Nuevo titulo: ");
+                if (strlen(temp) == 0) break;
+                if (!validarCadenaNoVacia(temp, 3)) {
+                    printf("Error: El titulo debe tener al menos 3 caracteres.\n");
+                } else {
+                    strcpy(trabajos[i].titulo, temp);
+                    break;
+                }
+            } while (1);
+
+            mostrarValorActual("Descripcion actual", trabajos[i].descripcion);
+            do {
+                leerString(temp, sizeof(temp), "Nueva descripcion: ");
+                if (strlen(temp) == 0) break;
+                if (!validarCadenaNoVacia(temp, 3)) {
+                    printf("Error: La descripcion debe tener al menos 3 caracteres.\n");
+                } else {
+                    strcpy(trabajos[i].descripcion, temp);
+                    break;
+                }
+            } while (1);
+
+            mostrarValorActual("Fecha entrega actual", trabajos[i].fecha_entrega);
+            fecha_valida = 0;
+            do {
+                leerString(temp, sizeof(temp), "Nueva fecha entrega (YYYY-MM-DD): ");
+                if (strlen(temp) == 0) { fecha_valida = 1; break; }
+                if (!validarFecha(temp)) {
+                    printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
+                } else if (!validarRangoFechas(trabajos[i].fecha_asignacion, temp)) {
+                    printf("Error: La fecha de entrega debe ser posterior a la de asignacion (%s).\n",
+                           trabajos[i].fecha_asignacion);
+                } else {
+                    strcpy(trabajos[i].fecha_entrega, temp);
+                    fecha_valida = 1;
+                }
+            } while (!fecha_valida);
+
+            mostrarValorActualFloat("Puntuacion maxima actual", trabajos[i].puntuacion_maxima);
+            do {
+                leerString(temp, sizeof(temp), "Nueva puntuacion maxima (1-100, Enter para mantener): ");
+                if (strlen(temp) == 0) break;
+                float val;
+                if (sscanf(temp, "%f", &val) == 1) {
+                    if (val < 0.01f || val > 100.0f) {
+                        printf("Error: La puntuacion debe estar entre 0.01 y 100.\n");
+                    } else {
+                        trabajos[i].puntuacion_maxima = val;
+                        break;
+                    }
+                } else {
+                    printf("Error: Debe ingresar un numero.\n");
+                }
+            } while (1);
+
             guardarTrabajos(trabajos, total);
             printf("Trabajo actualizado.\n");
             pausar();
@@ -185,7 +266,6 @@ void eliminarTrabajo(Usuario usuario_actual) {
     Trabajo trabajos[MAX_TRABAJOS];
     int total, i;
     char id_buscar[20];
-    char confirmacion[5];
 
     if (usuario_actual.tipo == 3) {
         printf("Sin permisos para eliminar trabajos.\n");
@@ -194,13 +274,18 @@ void eliminarTrabajo(Usuario usuario_actual) {
     }
 
     cargarTrabajos(trabajos, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID del trabajo a eliminar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID del trabajo a eliminar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(trabajos[i].id, id_buscar) == 0) {
-            printf("Desea eliminar el trabajo %s? (s/n): ", trabajos[i].titulo);
-            leerString(confirmacion, sizeof(confirmacion), "");
-            if (confirmacion[0] == 's' || confirmacion[0] == 'S') {
+            char msg[150];
+            sprintf(msg, "Desea eliminar el trabajo %s? (s/n): ", trabajos[i].titulo);
+            if (solicitarConfirmacion(msg)) {
                 trabajos[i].activo = 0;
                 guardarTrabajos(trabajos, total);
                 printf("Trabajo desactivado.\n");
@@ -218,8 +303,11 @@ void eliminarTrabajo(Usuario usuario_actual) {
 /* Registra la entrega de un trabajo por un alumno */
 void registrarEntrega(Usuario usuario_actual) {
     Entrega_Trabajo entregas[MAX_ENTREGAS];
-    int total;
+    Trabajo trabajos[MAX_TRABAJOS];
+    int total, total_t, j;
     Entrega_Trabajo nueva;
+    int fecha_valida;
+    float puntuacion_max = 10.0f;
     memset(&nueva, 0, sizeof(Entrega_Trabajo));
 
     if (usuario_actual.tipo == 3) {
@@ -229,15 +317,72 @@ void registrarEntrega(Usuario usuario_actual) {
     }
 
     cargarEntregas(entregas, &total);
+    cargarTrabajos(trabajos, &total_t);
     generarID(nueva.id, "ENTR", total + 1);
 
     printf("=== REGISTRAR ENTREGA ===\n");
     printf("ID generado: %s\n", nueva.id);
-    leerString(nueva.id_trabajo, sizeof(nueva.id_trabajo), "ID Trabajo: ");
-    leerString(nueva.id_alumno, sizeof(nueva.id_alumno), "ID Alumno: ");
-    leerString(nueva.fecha_entrega, sizeof(nueva.fecha_entrega), "Fecha entrega (YYYY-MM-DD): ");
-    leerFloat(&nueva.calificacion, "Calificacion: ");
-    leerString(nueva.comentarios, sizeof(nueva.comentarios), "Comentarios: ");
+
+    do {
+        leerString(nueva.id_trabajo, sizeof(nueva.id_trabajo), "ID Trabajo: ");
+        if (!validarCadenaNoVacia(nueva.id_trabajo, 2)) {
+            printf("Error: El ID de trabajo no puede estar vacio.\n");
+            continue;
+        }
+        if (!existeIDEnArchivo(ARCHIVO_TRABAJOS, nueva.id_trabajo)) {
+            printf("Error: No existe un trabajo con ID %s.\n", nueva.id_trabajo);
+        } else {
+            break;
+        }
+    } while (1);
+
+    /* Obtener puntuacion_maxima del trabajo */
+    for (j = 0; j < total_t; j++) {
+        if (strcmp(trabajos[j].id, nueva.id_trabajo) == 0) {
+            puntuacion_max = trabajos[j].puntuacion_maxima;
+            break;
+        }
+    }
+
+    do {
+        leerString(nueva.id_alumno, sizeof(nueva.id_alumno), "ID Alumno: ");
+        if (!validarCadenaNoVacia(nueva.id_alumno, 2)) {
+            printf("Error: El ID de alumno no puede estar vacio.\n");
+            continue;
+        }
+        if (!existeIDEnArchivo(ARCHIVO_ALUMNOS, nueva.id_alumno)) {
+            printf("Error: No existe un alumno con ID %s.\n", nueva.id_alumno);
+        } else {
+            break;
+        }
+    } while (1);
+
+    fecha_valida = 0;
+    do {
+        leerString(nueva.fecha_entrega, sizeof(nueva.fecha_entrega), "Fecha entrega (YYYY-MM-DD): ");
+        if (!validarFecha(nueva.fecha_entrega)) {
+            printf("Error: Fecha invalida. Formato: YYYY-MM-DD\n");
+        } else {
+            fecha_valida = 1;
+        }
+    } while (!fecha_valida);
+
+    do {
+        char prompt[50];
+        snprintf(prompt, sizeof(prompt), "Calificacion (0-%.2f): ", puntuacion_max);
+        leerFloat(&nueva.calificacion, prompt);
+        if (!validarPuntuacion(nueva.calificacion, puntuacion_max)) {
+            printf("Error: Calificacion invalida (0-%.2f).\n", puntuacion_max);
+        }
+    } while (!validarPuntuacion(nueva.calificacion, puntuacion_max));
+
+    do {
+        leerString(nueva.comentarios, sizeof(nueva.comentarios), "Comentarios: ");
+        if (!validarCadenaNoVacia(nueva.comentarios, 2)) {
+            printf("Error: Los comentarios deben tener al menos 2 caracteres.\n");
+        }
+    } while (!validarCadenaNoVacia(nueva.comentarios, 2));
+
     nueva.entregado = 1;
 
     entregas[total] = nueva;
@@ -252,6 +397,11 @@ void verEntregasAlumno(const char id_alumno[]) {
     Entrega_Trabajo entregas[MAX_ENTREGAS];
     Trabajo trabajos[MAX_TRABAJOS];
     int total_e, total_t, i, j, encontrado = 0;
+    if (!validarCadenaNoVacia(id_alumno, 1)) {
+        printf("Error: El ID de alumno no puede estar vacio.\n");
+        pausar();
+        return;
+    }
     cargarEntregas(entregas, &total_e);
     cargarTrabajos(trabajos, &total_t);
     limpiarPantalla();

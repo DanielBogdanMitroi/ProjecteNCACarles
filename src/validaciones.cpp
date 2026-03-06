@@ -152,3 +152,65 @@ int emailYaExiste(const char email[], const char archivo[], const char id_actual
     fclose(f);
     return 0;
 }
+
+/* Valida que la confirmacion sea 's' o 'n' */
+int validarConfirmacion(const char confirmacion[]) {
+    if (confirmacion[0] == 's' || confirmacion[0] == 'S' ||
+        confirmacion[0] == 'n' || confirmacion[0] == 'N') {
+        return 1;
+    }
+    return 0;
+}
+
+/* Valida que una puntuacion este entre 0 y maximo (inclusive) */
+int validarPuntuacion(float puntuacion, float maximo) {
+    return (puntuacion >= 0.0f && puntuacion <= maximo) ? 1 : 0;
+}
+
+/* Valida que fecha_fin sea posterior a fecha_inicio (formato YYYY-MM-DD) */
+int validarRangoFechas(const char fecha_inicio[], const char fecha_fin[]) {
+    int anio_i, mes_i, dia_i;
+    int anio_f, mes_f, dia_f;
+    if (sscanf(fecha_inicio, "%d-%d-%d", &anio_i, &mes_i, &dia_i) != 3) return 0;
+    if (sscanf(fecha_fin, "%d-%d-%d", &anio_f, &mes_f, &dia_f) != 3) return 0;
+    if (anio_f > anio_i) return 1;
+    if (anio_f == anio_i && mes_f > mes_i) return 1;
+    if (anio_f == anio_i && mes_f == mes_i && dia_f > dia_i) return 1;
+    return 0;
+}
+
+/* Valida que el dia sea un dia de la semana valido */
+int validarDiaSemana(const char dia[]) {
+    int i;
+    const char *dias_validos[] = {"Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
+    char dia_lower[20];
+    char ref_lower[20];
+    int len, j;
+
+    len = strlen(dia);
+    if (len == 0 || len >= 20) return 0;
+    for (j = 0; j < len; j++) {
+        dia_lower[j] = (char)tolower((unsigned char)dia[j]);
+    }
+    dia_lower[len] = '\0';
+
+    for (i = 0; i < 7; i++) {
+        int rlen = strlen(dias_validos[i]);
+        for (j = 0; j < rlen; j++) {
+            ref_lower[j] = (char)tolower((unsigned char)dias_validos[i][j]);
+        }
+        ref_lower[rlen] = '\0';
+        if (strcmp(dia_lower, ref_lower) == 0) return 1;
+    }
+    return 0;
+}
+
+/* Valida que hora_fin sea posterior a hora_inicio (formato HH:MM) */
+int validarHoraRango(const char hora_inicio[], const char hora_fin[]) {
+    int h_i, m_i, h_f, m_f;
+    if (sscanf(hora_inicio, "%d:%d", &h_i, &m_i) != 2) return 0;
+    if (sscanf(hora_fin, "%d:%d", &h_f, &m_f) != 2) return 0;
+    if (h_f > h_i) return 1;
+    if (h_f == h_i && m_f > m_i) return 1;
+    return 0;
+}

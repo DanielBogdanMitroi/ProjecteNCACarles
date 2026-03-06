@@ -83,7 +83,12 @@ void buscarMateria() {
     int total, i, encontrado = 0;
     char busqueda[50];
     cargarMaterias(materias, &total);
-    leerString(busqueda, sizeof(busqueda), "Ingrese ID o nombre de la materia: ");
+    do {
+        leerString(busqueda, sizeof(busqueda), "Ingrese ID o nombre de la materia: ");
+        if (!validarCadenaNoVacia(busqueda, 1)) {
+            printf("Error: La busqueda no puede estar vacia.\n");
+        }
+    } while (!validarCadenaNoVacia(busqueda, 1));
     limpiarPantalla();
     printf("=== RESULTADOS DE BUSQUEDA ===\n");
     for (i = 0; i < total; i++) {
@@ -158,41 +163,75 @@ void editarMateria() {
     Materia materias[MAX_MATERIAS];
     int total, i;
     char id_buscar[20];
+    char temp_str[200];
+    int temp_int;
 
     cargarMaterias(materias, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID de la materia a editar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID de la materia a editar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(materias[i].id, id_buscar) == 0) {
             printf("=== EDITAR MATERIA %s ===\n", materias[i].id);
+            printf("(Presione Enter para mantener el valor actual)\n\n");
 
+            mostrarValorActual("Nombre actual", materias[i].nombre);
             do {
-                leerString(materias[i].nombre, sizeof(materias[i].nombre), "Nombre: ");
-                if (!validarCadenaNoVacia(materias[i].nombre, 2)) {
+                leerString(temp_str, sizeof(temp_str), "Nuevo nombre: ");
+                if (strlen(temp_str) == 0) break;
+                if (!validarCadenaNoVacia(temp_str, 2)) {
                     printf("Error: El nombre debe tener al menos 2 caracteres.\n");
+                } else {
+                    strcpy(materias[i].nombre, temp_str);
+                    break;
                 }
-            } while (!validarCadenaNoVacia(materias[i].nombre, 2));
+            } while (1);
 
+            mostrarValorActual("Descripcion actual", materias[i].descripcion);
             do {
-                leerString(materias[i].descripcion, sizeof(materias[i].descripcion), "Descripcion: ");
-                if (!validarCadenaNoVacia(materias[i].descripcion, 3)) {
+                leerString(temp_str, sizeof(temp_str), "Nueva descripcion: ");
+                if (strlen(temp_str) == 0) break;
+                if (!validarCadenaNoVacia(temp_str, 3)) {
                     printf("Error: La descripcion debe tener al menos 3 caracteres.\n");
+                } else {
+                    strcpy(materias[i].descripcion, temp_str);
+                    break;
                 }
-            } while (!validarCadenaNoVacia(materias[i].descripcion, 3));
+            } while (1);
 
-            do {
-                leerEntero(&materias[i].creditos, "Creditos: ");
-                if (!validarCreditos(materias[i].creditos)) {
-                    printf("Error: Numero de creditos invalido (1-20).\n");
-                }
-            } while (!validarCreditos(materias[i].creditos));
+            mostrarValorActualEntero("Creditos actuales", materias[i].creditos);
+            printf("Nuevos creditos (0 para mantener): ");
+            leerEntero(&temp_int, "");
+            if (temp_int != 0) {
+                do {
+                    if (!validarCreditos(temp_int)) {
+                        printf("Error: Numero de creditos invalido (1-20).\n");
+                        leerEntero(&temp_int, "Nuevos creditos: ");
+                    } else {
+                        materias[i].creditos = temp_int;
+                        break;
+                    }
+                } while (!validarCreditos(temp_int));
+            }
 
-            do {
-                leerEntero(&materias[i].horas_semanales, "Horas semanales: ");
-                if (materias[i].horas_semanales < 1 || materias[i].horas_semanales > 40) {
-                    printf("Error: Horas semanales invalidas (1-40).\n");
-                }
-            } while (materias[i].horas_semanales < 1 || materias[i].horas_semanales > 40);
+            mostrarValorActualEntero("Horas semanales actuales", materias[i].horas_semanales);
+            printf("Nuevas horas semanales (0 para mantener): ");
+            leerEntero(&temp_int, "");
+            if (temp_int != 0) {
+                do {
+                    if (temp_int < 1 || temp_int > 40) {
+                        printf("Error: Horas semanales invalidas (1-40).\n");
+                        leerEntero(&temp_int, "Nuevas horas semanales: ");
+                    } else {
+                        materias[i].horas_semanales = temp_int;
+                        break;
+                    }
+                } while (temp_int < 1 || temp_int > 40);
+            }
 
             guardarMaterias(materias, total);
             printf("Materia actualizada.\n");
@@ -209,16 +248,20 @@ void eliminarMateria() {
     Materia materias[MAX_MATERIAS];
     int total, i;
     char id_buscar[20];
-    char confirmacion[5];
 
     cargarMaterias(materias, &total);
-    leerString(id_buscar, sizeof(id_buscar), "ID de la materia a eliminar: ");
+    do {
+        leerString(id_buscar, sizeof(id_buscar), "ID de la materia a eliminar: ");
+        if (!validarCadenaNoVacia(id_buscar, 1)) {
+            printf("Error: El ID no puede estar vacio.\n");
+        }
+    } while (!validarCadenaNoVacia(id_buscar, 1));
 
     for (i = 0; i < total; i++) {
         if (strcmp(materias[i].id, id_buscar) == 0) {
-            printf("Desea eliminar la materia %s? (s/n): ", materias[i].nombre);
-            leerString(confirmacion, sizeof(confirmacion), "");
-            if (confirmacion[0] == 's' || confirmacion[0] == 'S') {
+            char msg[200];
+            sprintf(msg, "Desea eliminar la materia %s? (s/n): ", materias[i].nombre);
+            if (solicitarConfirmacion(msg)) {
                 materias[i].activo = 0;
                 guardarMaterias(materias, total);
                 printf("Materia desactivada.\n");
